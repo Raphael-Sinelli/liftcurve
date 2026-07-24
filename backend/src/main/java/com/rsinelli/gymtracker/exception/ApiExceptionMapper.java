@@ -1,5 +1,6 @@
 package com.rsinelli.gymtracker.exception;
 
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -25,6 +26,21 @@ public class ApiExceptionMapper implements ExceptionMapper<Throwable> {
                     .type(MediaType.APPLICATION_JSON)
                     .entity(ErrorResponse.of(apiException.getCode(), apiException.getMessage(),
                             apiException.getStatus().getStatusCode()))
+                    .build();
+        }
+
+        // A WebApplicationException (e.g. NotFoundException for an unmatched route,
+        // NotAllowedException for a wrong HTTP verb) already carries its own correct,
+        // intentional HTTP status — it isn't an unexpected error and must not collapse
+        // into a generic 500 below.
+        if (exception instanceof WebApplicationException webApplicationException) {
+            int statusCode = webApplicationException.getResponse().getStatus();
+            Response.Status status = Response.Status.fromStatusCode(statusCode);
+            String code = status != null ? status.name() : "ERROR";
+            String message = status != null ? status.getReasonPhrase() : webApplicationException.getMessage();
+            return Response.status(statusCode)
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity(ErrorResponse.of(code, message, statusCode))
                     .build();
         }
 
