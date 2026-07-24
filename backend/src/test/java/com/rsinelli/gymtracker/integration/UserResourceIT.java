@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -57,7 +57,7 @@ class UserResourceIT {
 
     @Test
     void meWithExpiredTokenReturns401InContractShape() {
-        SecretKey key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        SecretKey key = new SecretKeySpec(Base64.getUrlDecoder().decode(jwtSecret), "HmacSHA256");
         String expiredToken = Jwt.claims()
                 .issuer("gym-progress-tracker")
                 .subject(UUID.randomUUID().toString())
