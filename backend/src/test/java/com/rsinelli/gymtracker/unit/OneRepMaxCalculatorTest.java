@@ -71,7 +71,7 @@ class OneRepMaxCalculatorTest {
     void repsJustBelowThirtySevenStillComputesBrzycki() {
         OneRepMaxResult result = calculator.calculate(new BigDecimal("100"), 36);
 
-        assertEquals(new BigDecimal("336.00"), result.epley());
+        assertEquals(new BigDecimal("220.00"), result.epley());
         assertEquals(new BigDecimal("3600.00"), result.brzycki());
         assertEquals(new BigDecimal("3600.00"), result.best());
     }
