@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class TokenServiceTest {
 
     private final TokenService tokenService =
-            new TokenService("unit-test-secret-must-be-long-enough-for-hs256", 15, 30);
+            new TokenService("Yb6-3fvO5B7NLqSuo9fJ4r_MmCS9rgwIegNlKXqJzgw", 15, 30);
 
     @Test
     void generatesNonBlankAccessTokenWithThreeJwtSegments() {
