@@ -49,7 +49,8 @@ class AuthResourceIT {
                 .contentType(ContentType.JSON)
                 .body("{\"refresh_token\": \"%s\"}".formatted(refreshToken))
                 .when().post("/auth/refresh")
-                .then().statusCode(401);
+                .then().statusCode(401)
+                .body("error.code", equalTo("INVALID_REFRESH_TOKEN"));
 
         given()
                 .contentType(ContentType.JSON)
@@ -61,7 +62,21 @@ class AuthResourceIT {
                 .contentType(ContentType.JSON)
                 .body("{\"refresh_token\": \"%s\"}".formatted(newRefreshToken))
                 .when().post("/auth/refresh")
-                .then().statusCode(401);
+                .then().statusCode(401)
+                .body("error.code", equalTo("INVALID_REFRESH_TOKEN"));
+    }
+
+    @Test
+    void registerRejectsInvalidPayloadWithValidationErrorContract() {
+        given()
+                .contentType(ContentType.JSON)
+                .body("""
+                        {"email": "not-an-email", "password": "short", "name": ""}
+                        """)
+                .when().post("/auth/register")
+                .then().statusCode(400)
+                .body("error.code", equalTo("VALIDATION_ERROR"))
+                .body("error.details", notNullValue());
     }
 
     @Test

@@ -30,6 +30,11 @@ public class TokenService {
             @ConfigProperty(name = "gymtracker.jwt.secret") String jwtSecret,
             @ConfigProperty(name = "gymtracker.jwt.access-token-ttl-minutes") long accessTokenTtlMinutes,
             @ConfigProperty(name = "gymtracker.jwt.refresh-token-ttl-days") long refreshTokenTtlDays) {
+        // HS256 needs a key of at least 256 bits; fail fast at boot rather than
+        // signing tokens the first request happens to trigger.
+        if (jwtSecret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalArgumentException("gymtracker.jwt.secret must be at least 32 bytes for HS256");
+        }
         this.jwtSecret = jwtSecret;
         this.accessTokenTtlMinutes = accessTokenTtlMinutes;
         this.refreshTokenTtlDays = refreshTokenTtlDays;
@@ -40,7 +45,7 @@ public class TokenService {
         return Jwt.claims()
                 .issuer(ISSUER)
                 .subject(userId.toString())
-                .expiresIn(Duration.ofMinutes(accessTokenTtlMinutes))
+                .expiresIn(accessTokenTtl())
                 .sign(key);
     }
 

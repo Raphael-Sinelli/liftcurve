@@ -1,15 +1,18 @@
 package com.rsinelli.gymtracker.exception;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import org.jboss.logging.Logger;
 
-import java.util.List;
-
+/**
+ * Handles {@link ApiException} and any otherwise-unmapped exception. Bean
+ * Validation failures ({@code ConstraintViolationException}) are handled by
+ * the separate, more specifically-typed {@link ConstraintViolationExceptionMapper}
+ * — see its Javadoc for why a {@code Throwable}-typed mapper cannot win that
+ * resolution against Quarkus's built-in validation mapper.
+ */
 @Provider
 public class ApiExceptionMapper implements ExceptionMapper<Throwable> {
 
@@ -25,28 +28,11 @@ public class ApiExceptionMapper implements ExceptionMapper<Throwable> {
                     .build();
         }
 
-        if (exception instanceof ConstraintViolationException constraintViolationException) {
-            List<ErrorResponse.FieldError> details = constraintViolationException.getConstraintViolations().stream()
-                    .map(this::toFieldError)
-                    .toList();
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .type(MediaType.APPLICATION_JSON)
-                    .entity(ErrorResponse.of("VALIDATION_ERROR", "Dados inválidos.",
-                            Response.Status.BAD_REQUEST.getStatusCode(), details))
-                    .build();
-        }
-
         LOG.error("Unhandled exception", exception);
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .type(MediaType.APPLICATION_JSON)
                 .entity(ErrorResponse.of("INTERNAL_ERROR", "Erro interno inesperado.",
                         Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()))
                 .build();
-    }
-
-    private ErrorResponse.FieldError toFieldError(ConstraintViolation<?> violation) {
-        String path = violation.getPropertyPath().toString();
-        String field = path.contains(".") ? path.substring(path.lastIndexOf('.') + 1) : path;
-        return new ErrorResponse.FieldError(field, violation.getMessage());
     }
 }

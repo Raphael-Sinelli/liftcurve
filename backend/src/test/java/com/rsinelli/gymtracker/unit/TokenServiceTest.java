@@ -8,6 +8,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TokenServiceTest {
 
@@ -45,5 +46,10 @@ class TokenServiceTest {
     @Test
     void accessTokenTtlMatchesConfiguredMinutes() {
         assertEquals(15, tokenService.accessTokenTtl().toMinutes());
+    }
+
+    @Test
+    void constructorRejectsSecretShorterThan32Bytes() {
+        assertThrows(IllegalArgumentException.class, () -> new TokenService("too-short-secret", 15, 30));
     }
 }
