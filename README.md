@@ -47,8 +47,8 @@ cd frontend && npm run build
 ## Status
 
 - [x] Sprint 0 — Fundações
-- [ ] Sprint 1 — Schema + Auth
-- [ ] Sprint 2 — Exercícios + Rotinas
+- [x] Sprint 1 — Schema + Auth
+- [x] Sprint 2 — Exercícios + Rotinas
 - [ ] Sprint 3 — Sessões + Domínio Core (1RM, volume, platô)
 - [ ] Sprint 4 — API polish + Seed
 - [ ] Sprint 5 — Frontend Core
