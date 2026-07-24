@@ -71,6 +71,11 @@ public class ExerciseService {
 
         try {
             exerciseRepository.deleteById(exerciseId);
+            // Panache's deleteById resolves to entityManager.remove(), which Hibernate defers to
+            // flush/commit time rather than executing the DELETE immediately — without this flush,
+            // an FK violation would surface after this try/catch has already returned, past the
+            // @Transactional interceptor's commit, and escape as an uncaught 500 instead of 409.
+            exerciseRepository.flush();
         } catch (PersistenceException e) {
             // In this Hibernate version, ConstraintViolationException is itself a PersistenceException
             // (ConstraintViolationException -> JDBCException -> HibernateException -> PersistenceException),
