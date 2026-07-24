@@ -94,7 +94,7 @@ public class RoutineService {
         for (int i = 0; i < items.size(); i++) {
             RoutineExerciseItem item = items.get(i);
             ExerciseEntity exercise = exerciseRepository.findVisibleTo(item.exerciseId(), currentUser.getId())
-                    .orElseThrow(() -> new ApiException("EXERCISE_NOT_FOUND", "Exercício não encontrado.", Response.Status.BAD_REQUEST));
+                    .orElseThrow(() -> new ApiException("INVALID_EXERCISE_REFERENCE", "Exercício não encontrado ou não visível para este usuário.", Response.Status.BAD_REQUEST));
 
             RoutineExerciseEntity routineExercise = new RoutineExerciseEntity();
             routineExercise.setRoutine(routine);
