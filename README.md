@@ -78,7 +78,7 @@ cd frontend && npm run build
 - [x] Sprint 1 — Schema + Auth
 - [x] Sprint 2 — Exercícios + Rotinas
 - [x] Sprint 3 — Sessões + Domínio Core (1RM, volume, platô)
-- [ ] Sprint 4 — API polish + Seed
+- [x] Sprint 4 — API polish + Seed
 - [ ] Sprint 5 — Frontend Core
 - [ ] Sprint 6 — Testes, CI/CD, Deploy
 - [ ] Sprint 7 — README final + Polish
