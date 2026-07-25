@@ -8,6 +8,26 @@ a sprint's plan when it becomes relevant to that sprint's work.
 
 ## `quarkus:dev` is broken — Postgres Dev Services crashes on boot
 
+**Resolved:** 2026-07-25, Sprint 3 (Task 9). Root cause was that Testcontainers Java
+2.x renamed the `org.testcontainers:postgresql` Maven artifact to
+`org.testcontainers:testcontainers-postgresql` — the old `postgresql` artifactId was
+never released past `1.21.4`, which made it *look* like `quarkus-bom`'s `2.0.5` pin for
+`org.testcontainers:testcontainers` had no matching Postgres module, when in fact the
+matching module just has a new name. Fix: removed the `<dependencyManagement>` override
+that forced `org.testcontainers:testcontainers` down to `1.21.4`, bumped the
+`testcontainers.version` property to `2.0.5`, and switched the test dependency's
+artifactId from `org.testcontainers:postgresql` to
+`org.testcontainers:testcontainers-postgresql` (version `2.0.5`, matching
+`quarkus-bom:3.37.3`'s own managed version — confirmed by inspecting the downloaded
+`quarkus-bom-3.37.3.pom` directly). `PostgreSQLContainer`'s API used in
+`PostgresTestResource` was unchanged across the major version bump. `./mvnw verify`
+stayed fully green (all 7 IT classes, 32 integration + 29 unit tests) and
+`./mvnw quarkus:dev` now boots cleanly with no `NoClassDefFoundError` —
+`GenericContainer` in Testcontainers 2.x no longer implements the JUnit 4
+`org.junit.rules.TestRule` shim that classic-loaded against this project's JUnit
+5-only classpath. `docker compose up -d` is still required before `quarkus:dev`/tests,
+same as before.
+
 **Found:** 2026-07-24, while starting the project locally after Sprint 2 for manual QA.
 
 **Symptom:** `./mvnw quarkus:dev` fails to boot. Every HTTP request returns 500. The log
