@@ -37,9 +37,13 @@ public class DemoDataGenerator {
         int[] occurrenceIndexByExercise = new int[6];
         BigDecimal[] frozenWeightByExercise = new BigDecimal[6];
         int[] frozenRepsByExercise = new int[6];
+        BigDecimal[] currentWeight = new BigDecimal[6];
+        for (int e = 0; e < 6; e++) {
+            currentWeight[e] = BigDecimal.valueOf(BASE_WEIGHT_KG[e]).setScale(2, RoundingMode.HALF_UP);
+        }
 
         LocalDate today = anchorNow.atZone(ZoneOffset.UTC).toLocalDate();
-        LocalDate firstMonday = today.minusWeeks(WEEKS).with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
+        LocalDate firstMonday = today.minusWeeks(WEEKS).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
         List<GeneratedSession> sessions = new ArrayList<>();
         for (int week = 0; week < WEEKS; week++) {
@@ -71,7 +75,7 @@ public class DemoDataGenerator {
                         weightKg = frozenWeightByExercise[exerciseIndex];
                         reps = frozenRepsByExercise[exerciseIndex];
                     } else {
-                        weightKg = weightForOccurrence(exerciseIndex, occurrence, rng);
+                        weightKg = nextWeight(currentWeight, exerciseIndex, rng);
                         reps = repsForOccurrence(exerciseIndex, rng);
                         if (exerciseIndex == PLATEAU_EXERCISE_INDEX && occurrence == PLATEAU_FROZEN_FROM_OCCURRENCE - 1) {
                             frozenWeightByExercise[exerciseIndex] = weightKg;
@@ -95,17 +99,20 @@ public class DemoDataGenerator {
         return sessions;
     }
 
-    private BigDecimal weightForOccurrence(int exerciseIndex, int occurrence, Random rng) {
-        BigDecimal trend = BigDecimal.valueOf((occurrence / 2) * 2.5);
-        BigDecimal noise = BigDecimal.valueOf((rng.nextInt(5) - 2) * 1.25);
-        return BigDecimal.valueOf(BASE_WEIGHT_KG[exerciseIndex])
-                .add(trend)
-                .add(noise)
-                .setScale(2, RoundingMode.HALF_UP);
+    /**
+     * Advances the exercise's running weight by a non-negative increment and returns the new
+     * total. Weight is tracked as running state (not recomputed independently per occurrence)
+     * so it can only ever go up or stay flat — this guarantees non-plateau exercises never
+     * produce a spurious non-improving streak from negative noise (see PlateauDetectionService).
+     */
+    private BigDecimal nextWeight(BigDecimal[] currentWeight, int exerciseIndex, Random rng) {
+        BigDecimal increment = BigDecimal.valueOf(rng.nextInt(3) * 0.625).setScale(2, RoundingMode.HALF_UP);
+        currentWeight[exerciseIndex] = currentWeight[exerciseIndex].add(increment);
+        return currentWeight[exerciseIndex];
     }
 
     private int repsForOccurrence(int exerciseIndex, Random rng) {
-        int reps = BASE_REPS[exerciseIndex] + (rng.nextInt(5) - 2);
-        return Math.max(6, Math.min(10, reps));
+        int reps = BASE_REPS[exerciseIndex] + rng.nextInt(3);
+        return Math.min(10, reps);
     }
 }

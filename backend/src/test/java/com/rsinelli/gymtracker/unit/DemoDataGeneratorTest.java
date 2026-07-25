@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DemoDataGeneratorTest {
@@ -87,6 +88,20 @@ class DemoDataGeneratorTest {
                     .mapToDouble(s -> s.weightKg().doubleValue()).average().orElseThrow();
 
             assertTrue(avgLastFour > avgFirstFour, "exercício " + e + " deveria progredir: primeiras=" + avgFirstFour + " últimas=" + avgLastFour);
+        }
+    }
+
+    @Test
+    void noSessionIsDatedAfterTheAnchorAcrossAllSevenWeekdayAnchors() {
+        Instant baseAnchor = Instant.parse("2026-07-25T12:00:00Z");
+
+        for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
+            Instant anchor = baseAnchor.plusSeconds(dayOffset * 86400L);
+            List<GeneratedSession> sessions = generator.generate(anchor);
+            for (GeneratedSession session : sessions) {
+                assertFalse(session.startedAt().isAfter(anchor),
+                        "session started after anchor, dayOffset=" + dayOffset + ": " + session.startedAt() + " > " + anchor);
+            }
         }
     }
 

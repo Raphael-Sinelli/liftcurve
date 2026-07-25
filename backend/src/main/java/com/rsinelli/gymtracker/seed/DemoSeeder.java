@@ -97,8 +97,8 @@ public class DemoSeeder {
         UserEntity demoUser = userRepository.findByEmail(DEMO_EMAIL).orElseThrow();
 
         List<ExerciseEntity> exercises = createGlobalExercises();
-        createDemoRoutines(demoUser, exercises);
-        seedWorkoutHistory(demoUser, exercises);
+        List<RoutineEntity> routines = createDemoRoutines(demoUser, exercises);
+        seedWorkoutHistory(demoUser, exercises, routines.get(0), routines.get(1));
     }
 
     private List<ExerciseEntity> createGlobalExercises() {
@@ -119,16 +119,17 @@ public class DemoSeeder {
         return exercises;
     }
 
-    private void createDemoRoutines(UserEntity owner, List<ExerciseEntity> exercises) {
-        createRoutine(owner, "Treino A — Peito/Pernas/Costas",
+    private List<RoutineEntity> createDemoRoutines(UserEntity owner, List<ExerciseEntity> exercises) {
+        RoutineEntity routineA = createRoutine(owner, "Treino A — Peito/Pernas/Costas",
                 "Treino de força, foco em grandes compostos.",
                 List.of(exercises.get(0), exercises.get(1), exercises.get(2)));
-        createRoutine(owner, "Treino B — Ombros/Bíceps/Costas",
+        RoutineEntity routineB = createRoutine(owner, "Treino B — Ombros/Bíceps/Costas",
                 "Treino complementar, foco em membros superiores.",
                 List.of(exercises.get(3), exercises.get(4), exercises.get(5)));
+        return List.of(routineA, routineB);
     }
 
-    private void createRoutine(UserEntity owner, String name, String description, List<ExerciseEntity> items) {
+    private RoutineEntity createRoutine(UserEntity owner, String name, String description, List<ExerciseEntity> items) {
         RoutineEntity routine = new RoutineEntity();
         routine.setUser(owner);
         routine.setName(name);
@@ -145,9 +146,11 @@ public class DemoSeeder {
             routineExercise.setPlannedLoadKg(null);
             routineExerciseRepository.persist(routineExercise);
         }
+        return routine;
     }
 
-    private void seedWorkoutHistory(UserEntity demoUser, List<ExerciseEntity> exercises) {
+    private void seedWorkoutHistory(UserEntity demoUser, List<ExerciseEntity> exercises,
+                                     RoutineEntity routineA, RoutineEntity routineB) {
         List<GeneratedSession> generatedSessions = demoDataGenerator.generate(Instant.now());
 
         for (GeneratedSession generatedSession : generatedSessions) {
@@ -155,6 +158,7 @@ public class DemoSeeder {
             session.setUser(demoUser);
             session.setStartedAt(generatedSession.startedAt());
             session.setFinishedAt(generatedSession.finishedAt());
+            session.setRoutine(isGroupA(generatedSession) ? routineA : routineB);
             workoutSessionRepository.persist(session);
 
             Map<Integer, Integer> setNumberByExercise = new HashMap<>();
@@ -176,5 +180,15 @@ public class DemoSeeder {
                 sessionSetRepository.persist(set);
             }
         }
+    }
+
+    /**
+     * Every set in a generated session belongs to the same exercise group by construction
+     * (see DemoDataGenerator.GROUP_A / GROUP_B), so checking the first set's exercise index
+     * is enough to tell which of the two seeded routines this session belongs to.
+     */
+    private boolean isGroupA(GeneratedSession generatedSession) {
+        int firstExerciseIndex = generatedSession.sets().get(0).exerciseIndex();
+        return firstExerciseIndex == 0 || firstExerciseIndex == 1 || firstExerciseIndex == 2;
     }
 }
