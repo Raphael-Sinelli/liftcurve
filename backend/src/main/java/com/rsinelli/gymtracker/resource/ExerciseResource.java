@@ -34,17 +34,21 @@ public class ExerciseResource {
     ExerciseService exerciseService;
 
     @GET
-    @Operation(summary = "Lista exercícios visíveis ao usuário (catálogo global + custom próprios)")
+    @Operation(summary = "Lista exercícios visíveis ao usuário (catálogo global + custom próprios)",
+            description = "Retorna todo exercício com owner nulo (catálogo global) mais os exercícios custom criados pelo próprio usuário autenticado.")
     @APIResponse(responseCode = "200", description = "Lista de exercícios")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     public Response list() {
         List<ExerciseResponse> response = exerciseService.list();
         return Response.ok(response).build();
     }
 
     @POST
-    @Operation(summary = "Cria um exercício custom pertencente ao usuário autenticado")
+    @Operation(summary = "Cria um exercício custom pertencente ao usuário autenticado",
+            description = "O exercício criado tem owner igual ao usuário autenticado — nunca entra no catálogo global.")
     @APIResponse(responseCode = "201", description = "Exercício criado")
     @APIResponse(responseCode = "400", description = "Payload inválido ou grupo muscular inexistente")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     public Response create(@Valid ExerciseRequest request) {
         ExerciseResponse response = exerciseService.create(request.name(), request.muscleGroupId());
         return Response.status(Response.Status.CREATED).entity(response).build();
@@ -52,8 +56,11 @@ public class ExerciseResource {
 
     @PUT
     @Path("/{id}")
-    @Operation(summary = "Atualiza um exercício custom do usuário autenticado")
+    @Operation(summary = "Atualiza um exercício custom do usuário autenticado",
+            description = "Só o dono do exercício custom pode editar. Exercícios do catálogo global (owner nulo) retornam 403.")
     @APIResponse(responseCode = "200", description = "Exercício atualizado")
+    @APIResponse(responseCode = "400", description = "Payload inválido ou grupo muscular inexistente")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     @APIResponse(responseCode = "403", description = "Exercício é do catálogo global, não pode ser editado")
     @APIResponse(responseCode = "404", description = "Exercício não encontrado ou pertence a outro usuário")
     public Response update(@PathParam("id") UUID id, @Valid ExerciseRequest request) {
@@ -63,8 +70,10 @@ public class ExerciseResource {
 
     @DELETE
     @Path("/{id}")
-    @Operation(summary = "Remove um exercício custom do usuário autenticado")
+    @Operation(summary = "Remove um exercício custom do usuário autenticado",
+            description = "Só o dono do exercício custom pode remover. Falha com 409 se o exercício estiver referenciado em alguma rotina ou sessão de treino registrada.")
     @APIResponse(responseCode = "204", description = "Exercício removido")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     @APIResponse(responseCode = "403", description = "Exercício é do catálogo global, não pode ser removido")
     @APIResponse(responseCode = "404", description = "Exercício não encontrado ou pertence a outro usuário")
     @APIResponse(responseCode = "409", description = "Exercício está em uso (em rotinas ou sessões de treino registradas)")
