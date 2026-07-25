@@ -59,7 +59,7 @@ check ever runs. Confirmed two dead ends:
   its own dependency tree independently of the consuming project's declared
   dependencies, so it never sees that addition.
 
-**Current workaround:** run the packaged app instead of dev mode —
+**Historical workaround (no longer needed as of the fix above):** run the packaged app instead of dev mode —
 `./mvnw package -DskipTests -Dquarkus.swagger-ui.always-include=true` then
 `java -jar backend/target/quarkus-app/quarkus-run.jar` (against the docker-compose
 Postgres on `localhost:5432`). This works because a packaged/prod-mode run never loads
@@ -68,21 +68,11 @@ Note `quarkus.swagger-ui.always-include` is a **build-time** property — it mus
 passed to `mvnw package`, not to the `java -jar` runtime command, or Swagger UI's
 assets won't be in the jar and `/q/swagger-ui` will genuinely 404.
 
-**Actual fix (not yet done):** either (a) narrow the `testcontainers` version override
-so it doesn't leak into Quarkus's own deployment-time dependency resolution — likely
-means finding a way to scope it more tightly than a bare `<dependencyManagement>`
-entry, or pinning `org.testcontainers:postgresql` to a version that already matches
-`quarkus-bom`'s `2.0.5` line instead of forcing `testcontainers` backward; or
-(b) explicitly exclude `org.testcontainers:testcontainers` from whatever pulls in the
-Postgres Dev Services processor and accept Dev Services being unavailable, documenting
-`docker compose up -d` as the required manual step before `quarkus:dev` (which is
-already the workflow today, since `docker-compose.yml` only has Postgres, not the
-backend). Needs someone to actually dig into Quarkus's extension dependency resolution
-rules to know which approach is viable — didn't want to guess-and-check on a
-day-to-day dev-loop dependency during a QA session.
+**Actual fix (done — see Resolved note above):** option (a) from the original two
+candidates is what worked: `org.testcontainers:postgresql` was renamed to
+`org.testcontainers:testcontainers-postgresql` in Testcontainers 2.x, so pinning that
+renamed artifact to `2.0.5` (matching `quarkus-bom:3.37.3`'s own pin) and removing the
+`1.21.4` override resolved it cleanly — no need for option (b)'s exclude-and-accept-no-
+Dev-Services fallback.
 
-**When to pick up:** flagged for Sprint 7 (README + Polish) at the latest, since a
-broken `quarkus:dev` loop is exactly the kind of thing a portfolio reviewer running
-`docker compose up` would hit. Could also be picked up opportunistically any sprint if
-someone's blocked by wanting hot-reload for domain-logic work (Sprint 3 especially,
-given how much back-and-forth iteration 1RM/volume/plateau calculators will need).
+**When to pick up:** N/A — resolved in Sprint 3, Task 9.

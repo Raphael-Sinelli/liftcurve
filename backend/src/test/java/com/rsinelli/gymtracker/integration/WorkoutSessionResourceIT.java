@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -215,5 +216,45 @@ class WorkoutSessionResourceIT {
                 .when().get("/workout-sessions/" + sessionId)
                 .then().statusCode(404)
                 .body("error.code", equalTo("SESSION_NOT_FOUND"));
+    }
+
+    @Test
+    void listReturnsOwnSessionsWithSetCountsAndIsScopedPerUser() {
+        String token = registerAndGetToken("listsessions");
+        String exerciseId = createExercise(token, "Puxada " + System.nanoTime());
+
+        String firstSessionId = startSession(token);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body("""
+                        {"exercise_id": "%s", "weight_kg": 40, "reps": 12}
+                        """.formatted(exerciseId))
+                .when().post("/workout-sessions/" + firstSessionId + "/sets")
+                .then().statusCode(201);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body("{}")
+                .when().patch("/workout-sessions/" + firstSessionId)
+                .then().statusCode(200);
+
+        String secondSessionId = startSession(token);
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .when().get("/workout-sessions")
+                .then().statusCode(200)
+                .body("id", hasItem(firstSessionId))
+                .body("id", hasItem(secondSessionId))
+                .body("find { it.id == '%s' }.set_count".formatted(firstSessionId), equalTo(1))
+                .body("find { it.id == '%s' }.set_count".formatted(secondSessionId), equalTo(0));
+
+        String otherToken = registerAndGetToken("listsessionsother");
+        given()
+                .header("Authorization", "Bearer " + otherToken)
+                .when().get("/workout-sessions")
+                .then().statusCode(200)
+                .body("size()", equalTo(0));
     }
 }

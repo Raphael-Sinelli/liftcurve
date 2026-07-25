@@ -207,4 +207,50 @@ class ExerciseResourceIT {
                 .then().statusCode(400)
                 .body("error.code", equalTo("VALIDATION_ERROR"));
     }
+
+    /**
+     * Sprint 3 added session_sets.exercise_id (no cascade) as a second FK referencing exercises,
+     * alongside routine_exercises. Both trigger the same EXERCISE_IN_USE/409 catch-and-translate
+     * in ExerciseService.delete() — this covers the session-set-FK source specifically, since the
+     * existing coverage (RoutineResourceIT#deletingExerciseInUseByRoutineReturns409) only exercises
+     * the routine-FK source.
+     */
+    @Test
+    void deletingExerciseInUseBySessionSetReturns409() {
+        String token = registerAndGetToken("inusesession");
+        String exerciseName = "Em Uso Sessao " + System.nanoTime();
+
+        String exerciseId = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body("""
+                        {"name": "%s", "muscle_group_id": "%s"}
+                        """.formatted(exerciseName, anyMuscleGroupId()))
+                .when().post("/exercises")
+                .then().statusCode(201)
+                .extract().path("id");
+
+        String sessionId = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body("{}")
+                .when().post("/workout-sessions")
+                .then().statusCode(201)
+                .extract().path("id");
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body("""
+                        {"exercise_id": "%s", "weight_kg": 60, "reps": 10}
+                        """.formatted(exerciseId))
+                .when().post("/workout-sessions/" + sessionId + "/sets")
+                .then().statusCode(201);
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .when().delete("/exercises/" + exerciseId)
+                .then().statusCode(409)
+                .body("error.code", equalTo("EXERCISE_IN_USE"));
+    }
 }

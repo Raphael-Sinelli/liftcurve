@@ -87,7 +87,7 @@ public class ExerciseService {
                 cause = cause.getCause();
             }
             if (cause instanceof ConstraintViolationException cve && "23503".equals(cve.getSQLState())) {
-                throw new ApiException("EXERCISE_IN_USE", "Este exercício está em uso em uma ou mais rotinas.", Response.Status.CONFLICT);
+                throw new ApiException("EXERCISE_IN_USE", "Este exercício está em uso e não pode ser excluído.", Response.Status.CONFLICT);
             }
             throw e;
         }

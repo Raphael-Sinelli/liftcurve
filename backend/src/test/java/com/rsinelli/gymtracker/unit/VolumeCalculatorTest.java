@@ -89,10 +89,11 @@ class VolumeCalculatorTest {
     @Test
     void sessionCrossingWeekBoundaryBucketsUnderStartedAtWeek() {
         LocalDate monday = anyMonday();
-        // Session "started" Saturday 23:00 UTC of week 1 — must bucket under week 1's Monday,
-        // not roll forward just because it's near the end of the week.
-        Instant saturdayNight = atUtc(monday.plusDays(5), 23);
-        SetVolumeInput input = new SetVolumeInput(new BigDecimal("60"), 12, CHEST, saturdayNight);
+        // Session "started" Sunday 23:00 UTC — the last hour of the ISO week that began on this
+        // Monday — must still bucket under this Monday, not roll forward into next week's bucket
+        // just because the very next calendar day (Monday) already belongs to the following ISO week.
+        Instant sundayNight = atUtc(monday.plusDays(6), 23);
+        SetVolumeInput input = new SetVolumeInput(new BigDecimal("60"), 12, CHEST, sundayNight);
 
         Map<VolumeBucketKey, BigDecimal> result = calculator.calculate(List.of(input));
 

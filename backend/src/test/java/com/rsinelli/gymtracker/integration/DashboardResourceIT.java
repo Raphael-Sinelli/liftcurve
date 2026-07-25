@@ -182,9 +182,11 @@ class DashboardResourceIT {
         UUID mondaySession = seedSession(userId, atUtc(monday, 9));
         seedSet(mondaySession, exerciseId, new BigDecimal("100"), 10);
 
-        // Same week (Saturday night), same exercise/muscle group — must land in the same bucket as the Monday set.
-        UUID saturdaySession = seedSession(userId, atUtc(monday.plusDays(5), 23));
-        seedSet(saturdaySession, exerciseId, new BigDecimal("50"), 5);
+        // Same ISO week, last hour of it (Sunday 23:00), same exercise/muscle group — must still land
+        // in the same bucket as the Monday set, not roll forward just because the next calendar day
+        // (Monday) already belongs to the following ISO week.
+        UUID sundaySession = seedSession(userId, atUtc(monday.plusDays(6), 23));
+        seedSet(sundaySession, exerciseId, new BigDecimal("50"), 5);
 
         // Following week — must land in a separate bucket.
         UUID nextWeekSession = seedSession(userId, atUtc(monday.plusWeeks(1), 9));

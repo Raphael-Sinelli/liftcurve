@@ -67,7 +67,7 @@ public class ExerciseResource {
     @APIResponse(responseCode = "204", description = "Exercício removido")
     @APIResponse(responseCode = "403", description = "Exercício é do catálogo global, não pode ser removido")
     @APIResponse(responseCode = "404", description = "Exercício não encontrado ou pertence a outro usuário")
-    @APIResponse(responseCode = "409", description = "Exercício está em uso em uma ou mais rotinas")
+    @APIResponse(responseCode = "409", description = "Exercício está em uso (em rotinas ou sessões de treino registradas)")
     public Response delete(@PathParam("id") UUID id) {
         exerciseService.delete(id);
         return Response.noContent().build();
