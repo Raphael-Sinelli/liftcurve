@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { z } from 'zod'
 import { Button } from '../../components/Button'
 import { FormField } from '../../components/FormField'
@@ -46,7 +46,7 @@ export function RoutineBuilderPage() {
   const navigate = useNavigate()
   const { showToast } = useToast()
   const { data: exercises } = useExercises()
-  const { data: existingRoutine, isLoading: isLoadingRoutine } = useRoutine(id)
+  const { data: existingRoutine, isLoading: isLoadingRoutine, isError: isRoutineError } = useRoutine(id)
   const createRoutine = useCreateRoutine()
   const updateRoutine = useUpdateRoutine()
 
@@ -111,6 +111,14 @@ export function RoutineBuilderPage() {
 
   if (isEditing && isLoadingRoutine) {
     return <p className="font-body text-muted">Carregando rotina...</p>
+  }
+
+  if (isEditing && isRoutineError) {
+    return (
+      <p className="font-body text-muted">
+        Rotina não encontrada. <Link to="/routines">Voltar para rotinas</Link>
+      </p>
+    )
   }
 
   const exerciseOptions = (exercises ?? []).map((exercise) => ({ value: exercise.id, label: exercise.name }))

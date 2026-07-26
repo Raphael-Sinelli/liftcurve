@@ -53,4 +53,13 @@ describe('RoutineBuilderPage', () => {
       expect(within(screen.getByRole('combobox')).getByText('Supino Reto')).toBeInTheDocument()
     })
   })
+
+  it('shows an error message instead of a blank form when the routine does not exist', async () => {
+    setAccessToken(VALID_ACCESS_TOKEN)
+    renderWithProviders(<BuilderUnderTest />, { route: '/routines/does-not-exist' })
+
+    expect(await screen.findByText('Rotina não encontrada.', { exact: false })).toBeInTheDocument()
+    expect(screen.queryByText('Editar rotina')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Nome')).not.toBeInTheDocument()
+  })
 })

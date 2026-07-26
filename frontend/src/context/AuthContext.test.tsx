@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -18,44 +19,39 @@ function Probe() {
   )
 }
 
-describe('AuthProvider', () => {
-  it('finishes loading with no user when there is no stored refresh token', async () => {
-    render(
+function renderWithAuth(queryClient: QueryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })) {
+  render(
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Probe />
-      </AuthProvider>,
-    )
+      </AuthProvider>
+    </QueryClientProvider>,
+  )
+  return queryClient
+}
+
+describe('AuthProvider', () => {
+  it('finishes loading with no user when there is no stored refresh token', async () => {
+    renderWithAuth()
     await waitFor(() => expect(screen.getByTestId('loading')).toHaveTextContent('false'))
     expect(screen.getByTestId('user')).toHaveTextContent('none')
   })
 
   it('silently restores the session on boot when a valid refresh token is stored', async () => {
     setStoredRefreshToken(VALID_REFRESH_TOKEN)
-    render(
-      <AuthProvider>
-        <Probe />
-      </AuthProvider>,
-    )
+    renderWithAuth()
     await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('Conta Demo'))
   })
 
   it('loginAsDemo populates the user', async () => {
-    render(
-      <AuthProvider>
-        <Probe />
-      </AuthProvider>,
-    )
+    renderWithAuth()
     await waitFor(() => expect(screen.getByTestId('loading')).toHaveTextContent('false'))
     await userEvent.click(screen.getByText('demo-login'))
     await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('Conta Demo'))
   })
 
   it('logout clears the user and the stored refresh token', async () => {
-    render(
-      <AuthProvider>
-        <Probe />
-      </AuthProvider>,
-    )
+    renderWithAuth()
     await waitFor(() => expect(screen.getByTestId('loading')).toHaveTextContent('false'))
     await userEvent.click(screen.getByText('demo-login'))
     await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('Conta Demo'))
@@ -63,5 +59,22 @@ describe('AuthProvider', () => {
     await userEvent.click(screen.getByText('logout'))
     await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('none'))
     expect(getAccessToken()).toBeNull()
+  })
+
+  it('logout clears the React Query cache so the next session never sees stale data', async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    // Seed the cache with a dummy query, simulating data fetched during the previous user's session
+    // (e.g. ['exercises'] or ['routines']), which are not user-scoped query keys.
+    queryClient.setQueryData(['exercises'], [{ id: 'previous-user-exercise' }])
+    expect(queryClient.getQueryCache().getAll().length).toBeGreaterThan(0)
+
+    renderWithAuth(queryClient)
+    await waitFor(() => expect(screen.getByTestId('loading')).toHaveTextContent('false'))
+    await userEvent.click(screen.getByText('demo-login'))
+    await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('Conta Demo'))
+
+    await userEvent.click(screen.getByText('logout'))
+    await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('none'))
+    expect(queryClient.getQueryCache().getAll().length).toBe(0)
   })
 })

@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { getMe, login as loginRequest, logout as logoutRequest, register as registerRequest, type User } from '../api/authApi'
 import { refreshAccessToken } from '../lib/apiClient'
 import {
@@ -26,6 +27,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient()
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(getAccessToken())
   const [isLoading, setIsLoading] = useState(true)
@@ -95,7 +97,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setAccessToken(null)
     clearStoredRefreshToken()
-  }, [])
+    queryClient.clear()
+  }, [queryClient])
 
   return (
     <AuthContext.Provider value={{ user, accessToken: token, isLoading, login, loginAsDemo, register, logout }}>

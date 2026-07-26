@@ -8,4 +8,9 @@ describe('App', () => {
     renderWithProviders(<App />, { route: '/' })
     await waitFor(() => expect(screen.getByText('Gym Progress Tracker')).toBeInTheDocument())
   })
+
+  it('redirects an unknown URL through the root redirect to /login when unauthenticated', async () => {
+    renderWithProviders(<App />, { route: '/this-does-not-exist' })
+    await waitFor(() => expect(screen.getByText('Gym Progress Tracker')).toBeInTheDocument())
+  })
 })

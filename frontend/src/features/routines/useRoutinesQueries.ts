@@ -74,5 +74,10 @@ export function useDeleteRoutine() {
         queryClient.setQueryData(ROUTINES_KEY, context.previous)
       }
     },
+    onSuccess: (_data, id) => {
+      // Deletion is confirmed server-side — safe to definitively drop the detail cache entry now
+      // (unlike the list, which is updated optimistically in onMutate).
+      queryClient.removeQueries({ queryKey: routineKey(id) })
+    },
   })
 }
