@@ -1,4 +1,4 @@
-# Deploy — gym-progress-tracker
+# Deploy — LiftCurve
 
 Backend no Render (Docker), frontend na Vercel. Passo a passo completo — sem CLI, só os
 painéis web dos dois serviços.

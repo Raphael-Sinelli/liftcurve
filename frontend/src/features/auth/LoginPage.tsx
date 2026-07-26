@@ -52,7 +52,7 @@ export function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg px-4">
       <div className="w-full max-w-sm rounded-sm border border-line bg-surface p-8">
-        <h1 className="font-display text-3xl font-bold text-ink">Gym Progress Tracker</h1>
+        <h1 className="font-display text-3xl font-bold text-ink">LiftCurve</h1>
         <p className="mt-1 font-body text-sm text-muted">Entre para ver sua progressão.</p>
 
         <form className="mt-6 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
