@@ -23,7 +23,8 @@ public class MuscleGroupResource {
     MuscleGroupRepository muscleGroupRepository;
 
     @GET
-    @Operation(summary = "Lista todos os grupos musculares")
+    @Operation(summary = "Lista todos os grupos musculares",
+            description = "Endpoint público, sem autenticação. Lista fixa (10 grupos, seed via migration V3), usada pra popular formulários de criação de exercício.")
     @APIResponse(responseCode = "200", description = "Lista de grupos musculares")
     public Response list() {
         List<MuscleGroupResponse> response = muscleGroupRepository.listAllOrderedByName().stream()

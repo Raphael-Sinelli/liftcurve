@@ -37,8 +37,10 @@ public class WorkoutSessionResource {
     WorkoutSessionService workoutSessionService;
 
     @GET
-    @Operation(summary = "Lista as sessões de treino do usuário autenticado")
+    @Operation(summary = "Lista as sessões de treino do usuário autenticado",
+            description = "Cada item traz set_count (total de séries já registradas), sem o detalhe de cada série — use GET /{id} para o detalhe completo.")
     @APIResponse(responseCode = "200", description = "Lista de sessões (resumo)")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     public Response list() {
         List<WorkoutSessionSummaryResponse> response = workoutSessionService.list();
         return Response.ok(response).build();
@@ -46,8 +48,10 @@ public class WorkoutSessionResource {
 
     @GET
     @Path("/{id}")
-    @Operation(summary = "Retorna o detalhe de uma sessão, incluindo séries registradas")
+    @Operation(summary = "Retorna o detalhe de uma sessão, incluindo séries registradas",
+            description = "Sessão de outro usuário sempre retorna 404 (nunca 403) — sem catálogo compartilhado de sessões.")
     @APIResponse(responseCode = "200", description = "Detalhe da sessão")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     @APIResponse(responseCode = "404", description = "Sessão não encontrada ou pertence a outro usuário")
     public Response get(@PathParam("id") UUID id) {
         WorkoutSessionResponse response = workoutSessionService.get(id);
@@ -55,9 +59,11 @@ public class WorkoutSessionResource {
     }
 
     @POST
-    @Operation(summary = "Inicia uma nova sessão de treino")
+    @Operation(summary = "Inicia uma nova sessão de treino",
+            description = "Só é permitida 1 sessão ativa (finished_at nulo) por usuário por vez. routine_id é opcional — se informado, precisa pertencer ao usuário atual.")
     @APIResponse(responseCode = "201", description = "Sessão iniciada")
-    @APIResponse(responseCode = "400", description = "Referência de rotina inválida")
+    @APIResponse(responseCode = "400", description = "Referência de rotina inválida ou payload malformado")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     @APIResponse(responseCode = "409", description = "Já existe uma sessão ativa")
     public Response create(@Valid WorkoutSessionRequest request) {
         WorkoutSessionResponse response = workoutSessionService.create(request.routineId(), request.notes());
@@ -66,8 +72,11 @@ public class WorkoutSessionResource {
 
     @PATCH
     @Path("/{id}")
-    @Operation(summary = "Finaliza uma sessão de treino")
+    @Operation(summary = "Finaliza uma sessão de treino",
+            description = "Seta finished_at = now() no servidor. Não é possível finalizar uma sessão já finalizada nem adicionar séries depois de finalizada.")
     @APIResponse(responseCode = "200", description = "Sessão finalizada")
+    @APIResponse(responseCode = "400", description = "Payload malformado")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     @APIResponse(responseCode = "404", description = "Sessão não encontrada ou pertence a outro usuário")
     @APIResponse(responseCode = "409", description = "Sessão já estava finalizada")
     public Response finish(@PathParam("id") UUID id, @Valid FinishWorkoutSessionRequest request) {
@@ -77,9 +86,11 @@ public class WorkoutSessionResource {
 
     @POST
     @Path("/{id}/sets")
-    @Operation(summary = "Registra uma série executada na sessão")
+    @Operation(summary = "Registra uma série executada na sessão",
+            description = "set_number é calculado no servidor (posição entre as séries já registradas daquele exercício naquela sessão, reinicia por exercício) — não é aceito como campo do payload. O 1RM estimado (Epley/Brzycki/melhor) é calculado e persistido no insert.")
     @APIResponse(responseCode = "201", description = "Série registrada")
     @APIResponse(responseCode = "400", description = "Referência de exercício inválida ou payload inválido")
+    @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     @APIResponse(responseCode = "404", description = "Sessão não encontrada ou pertence a outro usuário")
     @APIResponse(responseCode = "409", description = "Sessão já finalizada")
     public Response addSet(@PathParam("id") UUID id, @Valid SessionSetRequest request) {

@@ -30,7 +30,8 @@ public class UserResource {
 
     @GET
     @Path("/me")
-    @Operation(summary = "Retorna o perfil do usuário autenticado")
+    @Operation(summary = "Retorna o perfil do usuário autenticado",
+            description = "Deriva o usuário do subject (sub) do JWT — não aceita nem precisa de nenhum parâmetro de identificação.")
     @APIResponse(responseCode = "200", description = "Perfil do usuário")
     @APIResponse(responseCode = "401", description = "Token ausente, inválido ou expirado")
     public Response me() {
