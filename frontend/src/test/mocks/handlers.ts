@@ -427,4 +427,30 @@ export const handlers = [
     sessionsFixture = sessionsFixture.map((s) => (s.id === params.id ? session : s))
     return HttpResponse.json(createdSet, { status: 201 })
   }),
+
+  http.get('/dashboard/progression/:exerciseId', ({ params }) => {
+    if (params.exerciseId === 'ex-global-1') {
+      return HttpResponse.json({
+        exercise_id: 'ex-global-1',
+        exercise_name: 'Supino Reto',
+        points: [
+          { session_started_at: '2026-06-01T12:00:00Z', estimated_1rm_best: 90 },
+          { session_started_at: '2026-06-15T12:00:00Z', estimated_1rm_best: 95 },
+          { session_started_at: '2026-07-01T12:00:00Z', estimated_1rm_best: 101.3 },
+        ],
+      })
+    }
+    return HttpResponse.json({ exercise_id: params.exerciseId, exercise_name: 'Exercício', points: [] })
+  }),
+
+  http.get('/dashboard/plateaus', () =>
+    HttpResponse.json([
+      {
+        exercise_id: 'ex-custom-1',
+        exercise_name: 'Supino Inclinado Halteres',
+        current_max_1rm: 60,
+        suggestion: 'Considere reduzir a carga em ~10% por 1 semana (deload).',
+      },
+    ]),
+  ),
 ]
