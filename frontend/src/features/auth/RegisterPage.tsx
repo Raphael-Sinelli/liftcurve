@@ -32,7 +32,7 @@ export function RegisterPage() {
     setFormError(null)
     try {
       await registerUser(values.email, values.password, values.name)
-      navigate('/exercises', { replace: true })
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       const apiError = extractApiError(err)
       setFormError(apiError ? getErrorMessage(apiError.code) : getErrorMessage('UNKNOWN'))

@@ -24,6 +24,10 @@ const ERROR_MESSAGES: Record<string, string> = {
   EXERCISE_IN_USE: 'Este exercício está em uso em uma rotina ou sessão e não pode ser excluído.',
   INVALID_EXERCISE_REFERENCE: 'Um dos exercícios selecionados não é válido.',
   ROUTINE_NOT_FOUND: 'Rotina não encontrada.',
+  SESSION_ALREADY_ACTIVE: 'Você já tem um treino em andamento.',
+  SESSION_ALREADY_FINISHED: 'Este treino já foi finalizado.',
+  SESSION_NOT_FOUND: 'Sessão não encontrada.',
+  INVALID_ROUTINE_REFERENCE: 'A rotina selecionada não é válida.',
   VALIDATION_ERROR: 'Verifique os campos preenchidos.',
 }
 

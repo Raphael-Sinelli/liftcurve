@@ -10,7 +10,7 @@ function LoginUnderTest() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/exercises" element={<p>Página de exercícios</p>} />
+      <Route path="/dashboard" element={<p>Página de dashboard</p>} />
       <Route path="/register" element={<p>Página de registro</p>} />
     </Routes>
   )
@@ -36,13 +36,13 @@ describe('LoginPage', () => {
     await userEvent.type(screen.getByLabelText('Email'), DEMO_EMAIL)
     await userEvent.type(screen.getByLabelText('Senha'), DEMO_PASSWORD)
     await userEvent.click(screen.getByRole('button', { name: 'Entrar' }))
-    await waitFor(() => expect(screen.getByText('Página de exercícios')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Página de dashboard')).toBeInTheDocument())
   })
 
   it('the demo-login button logs in with the documented demo credentials', async () => {
     renderWithProviders(<LoginUnderTest />, { route: '/login' })
     await userEvent.click(screen.getByRole('button', { name: 'Entrar como visitante (conta demo)' }))
-    await waitFor(() => expect(screen.getByText('Página de exercícios')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Página de dashboard')).toBeInTheDocument())
   })
 
   it('links to the register page', () => {

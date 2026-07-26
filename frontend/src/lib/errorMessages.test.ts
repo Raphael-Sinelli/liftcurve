@@ -12,6 +12,22 @@ describe('getErrorMessage', () => {
   it('returns the fallback message for an unknown code', () => {
     expect(getErrorMessage('SOME_UNMAPPED_CODE')).toBe('Algo deu errado. Tente novamente.')
   })
+
+  it('maps SESSION_ALREADY_ACTIVE', () => {
+    expect(getErrorMessage('SESSION_ALREADY_ACTIVE')).toBe('Você já tem um treino em andamento.')
+  })
+
+  it('maps SESSION_ALREADY_FINISHED', () => {
+    expect(getErrorMessage('SESSION_ALREADY_FINISHED')).toBe('Este treino já foi finalizado.')
+  })
+
+  it('maps SESSION_NOT_FOUND', () => {
+    expect(getErrorMessage('SESSION_NOT_FOUND')).toBe('Sessão não encontrada.')
+  })
+
+  it('maps INVALID_ROUTINE_REFERENCE', () => {
+    expect(getErrorMessage('INVALID_ROUTINE_REFERENCE')).toBe('A rotina selecionada não é válida.')
+  })
 })
 
 describe('extractApiError', () => {

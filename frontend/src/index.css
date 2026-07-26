@@ -12,6 +12,11 @@
   --color-muted: #96907e;
   --color-accent: #c1442b;
   --color-line: #38352c;
+  --color-chart-iron: #7a8b99;
+  --color-chart-brass: #b08d57;
+  --color-chart-olive: #6b7355;
+  --color-chart-copper: #9c6b4f;
+  --color-chart-gold: #c9a961;
 
   --font-display: "Big Shoulders Display", sans-serif;
   --font-body: "IBM Plex Sans", sans-serif;

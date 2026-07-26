@@ -29,7 +29,7 @@ export function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) })
 
-  const redirectTo = (location.state as { from?: string } | null)?.from ?? '/exercises'
+  const redirectTo = (location.state as { from?: string } | null)?.from ?? '/dashboard'
 
   async function attemptLogin(action: () => Promise<void>) {
     setFormError(null)
