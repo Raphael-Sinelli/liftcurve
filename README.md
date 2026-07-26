@@ -65,6 +65,16 @@ registrar um treino novo (com ou sem rotina base), adicionar séries em tempo re
 GYMTRACKER_SEED_DEMO=true ./mvnw quarkus:dev      # Windows: set GYMTRACKER_SEED_DEMO=true && mvnw.cmd quarkus:dev
 ```
 
+## Deploy
+
+Backend no [Render](https://render.com) (Docker), frontend na [Vercel](https://vercel.com).
+Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
+[`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+<!-- Depois do deploy real, preencher: -->
+<!-- - Frontend: https://... -->
+<!-- - Backend (API): https://... -->
+
 ## Testes
 
 ```bash
