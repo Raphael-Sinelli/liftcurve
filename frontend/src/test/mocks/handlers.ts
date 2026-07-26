@@ -37,6 +37,57 @@ export function resetExercisesFixture() {
   ]
 }
 
+interface RoutineFixture {
+  id: string
+  name: string
+  description: string | null
+  created_at: string
+  exercises: Array<{
+    exercise_id: string
+    exercise_name: string
+    order_index: number
+    planned_sets: number
+    planned_reps: number
+    planned_load_kg: number | null
+  }>
+}
+
+let routinesFixture: RoutineFixture[] = [
+  {
+    id: 'routine-1',
+    name: 'Treino A',
+    description: 'Peito e tríceps',
+    created_at: '2026-01-01T00:00:00Z',
+    exercises: [
+      { exercise_id: 'ex-global-1', exercise_name: 'Supino Reto', order_index: 0, planned_sets: 3, planned_reps: 10, planned_load_kg: 60 },
+    ],
+  },
+]
+
+export function resetRoutinesFixture() {
+  routinesFixture = [
+    {
+      id: 'routine-1',
+      name: 'Treino A',
+      description: 'Peito e tríceps',
+      created_at: '2026-01-01T00:00:00Z',
+      exercises: [
+        { exercise_id: 'ex-global-1', exercise_name: 'Supino Reto', order_index: 0, planned_sets: 3, planned_reps: 10, planned_load_kg: 60 },
+      ],
+    },
+  ]
+}
+
+function toSummary(routine: RoutineFixture) {
+  return {
+    id: routine.id,
+    name: routine.name,
+    description: routine.description,
+    created_at: routine.created_at,
+    exercise_count: routine.exercises.length,
+  }
+}
+
 export const handlers = [
   http.post('/auth/login', async ({ request }) => {
     const body = (await request.json()) as LoginBody
@@ -132,6 +183,78 @@ export const handlers = [
       )
     }
     exercisesFixture = exercisesFixture.filter((e) => e.id !== params.id)
+    return new HttpResponse(null, { status: 204 })
+  }),
+
+  http.get('/routines', () => HttpResponse.json(routinesFixture.map(toSummary))),
+
+  http.get('/routines/:id', ({ params }) => {
+    const routine = routinesFixture.find((r) => r.id === params.id)
+    if (!routine) {
+      return HttpResponse.json({ error: { code: 'ROUTINE_NOT_FOUND', message: 'Rotina não encontrada.', status: 404, details: [] } }, { status: 404 })
+    }
+    return HttpResponse.json(routine)
+  }),
+
+  http.post('/routines', async ({ request }) => {
+    const body = (await request.json()) as {
+      name: string
+      description: string | null
+      exercises: { exercise_id: string; planned_sets: number; planned_reps: number; planned_load_kg: number | null }[]
+    }
+    if (body.exercises.some((e) => e.exercise_id === 'ex-invalid')) {
+      return HttpResponse.json(
+        { error: { code: 'INVALID_EXERCISE_REFERENCE', message: 'Um dos exercícios selecionados não é válido.', status: 400, details: [] } },
+        { status: 400 },
+      )
+    }
+    const created: RoutineFixture = {
+      id: `routine-new-${routinesFixture.length + 1}`,
+      name: body.name,
+      description: body.description,
+      created_at: '2026-07-25T00:00:00Z',
+      exercises: body.exercises.map((e, index) => ({
+        exercise_id: e.exercise_id,
+        exercise_name: 'Exercício',
+        order_index: index,
+        planned_sets: e.planned_sets,
+        planned_reps: e.planned_reps,
+        planned_load_kg: e.planned_load_kg,
+      })),
+    }
+    routinesFixture = [...routinesFixture, created]
+    return HttpResponse.json(created, { status: 201 })
+  }),
+
+  http.put('/routines/:id', async ({ params, request }) => {
+    const body = (await request.json()) as {
+      name: string
+      description: string | null
+      exercises: { exercise_id: string; planned_sets: number; planned_reps: number; planned_load_kg: number | null }[]
+    }
+    const existing = routinesFixture.find((r) => r.id === params.id)
+    if (!existing) {
+      return HttpResponse.json({ error: { code: 'ROUTINE_NOT_FOUND', message: 'Rotina não encontrada.', status: 404, details: [] } }, { status: 404 })
+    }
+    const updated: RoutineFixture = {
+      ...existing,
+      name: body.name,
+      description: body.description,
+      exercises: body.exercises.map((e, index) => ({
+        exercise_id: e.exercise_id,
+        exercise_name: 'Exercício',
+        order_index: index,
+        planned_sets: e.planned_sets,
+        planned_reps: e.planned_reps,
+        planned_load_kg: e.planned_load_kg,
+      })),
+    }
+    routinesFixture = routinesFixture.map((r) => (r.id === params.id ? updated : r))
+    return HttpResponse.json(updated)
+  }),
+
+  http.delete('/routines/:id', ({ params }) => {
+    routinesFixture = routinesFixture.filter((r) => r.id !== params.id)
     return new HttpResponse(null, { status: 204 })
   }),
 ]

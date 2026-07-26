@@ -5,6 +5,7 @@ import { LoginPage } from './features/auth/LoginPage'
 import { RegisterPage } from './features/auth/RegisterPage'
 import { ExercisesListPage } from './features/exercises/ExercisesListPage'
 import { RoutinesListPage } from './features/routines/RoutinesListPage'
+import { RoutineBuilderPage } from './features/routines/RoutineBuilderPage'
 import { useAuth } from './context/AuthContext'
 
 function RedirectRoot() {
@@ -37,6 +38,26 @@ export function App() {
           <ProtectedRoute>
             <AppLayout>
               <RoutinesListPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/routines/new"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <RoutineBuilderPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/routines/:id"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <RoutineBuilderPage />
             </AppLayout>
           </ProtectedRoute>
         }
