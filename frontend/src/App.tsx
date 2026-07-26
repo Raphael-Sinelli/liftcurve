@@ -1,8 +1,47 @@
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { AppLayout } from './routes/AppLayout'
+import { ProtectedRoute } from './routes/ProtectedRoute'
+import { LoginPage } from './features/auth/LoginPage'
+import { RegisterPage } from './features/auth/RegisterPage'
+import { ExercisesListPage } from './features/exercises/ExercisesListPage'
+import { RoutinesListPage } from './features/routines/RoutinesListPage'
+import { useAuth } from './context/AuthContext'
+
+function RedirectRoot() {
+  const { user, isLoading } = useAuth()
+  if (isLoading) {
+    return null
+  }
+  return <Navigate to={user ? '/exercises' : '/login'} replace />
+}
+
 export function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
-      <h1 className="text-3xl font-semibold tracking-tight">gym-progress-tracker</h1>
-    </main>
+    <Routes>
+      <Route path="/" element={<RedirectRoot />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/exercises"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <ExercisesListPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/routines"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <RoutinesListPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   )
 }
 
