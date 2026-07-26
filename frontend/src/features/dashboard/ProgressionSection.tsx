@@ -6,13 +6,15 @@ import { ProgressionChart, type ProgressionChartPoint } from './ProgressionChart
 import { usePlateaus, useProgression } from './useDashboardQueries'
 
 export function ProgressionSection() {
-  const { data: exercises } = useExercises()
+  const { data: exercises, isLoading: isLoadingExercises } = useExercises()
   const sortedExercises = [...(exercises ?? [])].sort((a, b) => a.name.localeCompare(b.name))
   const [selectedExerciseId, setSelectedExerciseId] = useState('')
   const effectiveExerciseId = selectedExerciseId || sortedExercises[0]?.id || ''
 
-  const { data: progression, isLoading } = useProgression(effectiveExerciseId)
+  const { data: progression, isLoading: isLoadingProgression } = useProgression(effectiveExerciseId)
   const { data: plateaus } = usePlateaus()
+
+  const isLoading = isLoadingExercises || isLoadingProgression
 
   const activePlateau = plateaus?.find((alert) => alert.exerciseId === effectiveExerciseId)
 

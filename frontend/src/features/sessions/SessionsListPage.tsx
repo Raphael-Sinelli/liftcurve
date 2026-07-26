@@ -8,10 +8,12 @@ import { StartSessionModal } from './StartSessionModal'
 import { useSessions } from './useSessionsQueries'
 
 export function SessionsListPage() {
-  const { data: sessions, isLoading } = useSessions()
-  const { data: routines } = useRoutines()
+  const { data: sessions, isLoading: isLoadingSessions } = useSessions()
+  const { data: routines, isLoading: isLoadingRoutines } = useRoutines()
   const navigate = useNavigate()
   const [showStartModal, setShowStartModal] = useState(false)
+
+  const isLoading = isLoadingSessions || isLoadingRoutines
 
   const sorted = useMemo(
     () => [...(sessions ?? [])].sort((a, b) => b.startedAt.localeCompare(a.startedAt)),

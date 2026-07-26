@@ -55,4 +55,33 @@ describe('SessionsListPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Iniciar' }))
     await waitFor(() => expect(screen.getByText('Detalhe da sessão')).toBeInTheDocument())
   })
+
+  it('never shows the wrong "Treino livre" label while routines are still resolving', async () => {
+    setAccessToken(VALID_ACCESS_TOKEN)
+    let resolveRoutines: () => void = () => {}
+    const routinesGate = new Promise<void>((resolve) => {
+      resolveRoutines = resolve
+    })
+    server.use(
+      http.get('/routines', async () => {
+        await routinesGate
+        return HttpResponse.json([
+          { id: 'routine-1', name: 'Treino A', description: 'Peito e tríceps', created_at: '2026-01-01T00:00:00Z', exercise_count: 1 },
+        ])
+      }),
+    )
+
+    renderWithProviders(<SessionsUnderTest />, { route: '/sessions' })
+
+    // Sessions resolve quickly (no artificial delay) while routines stay gated. If loading isn't
+    // gated on useRoutines() too, the list renders early and shows "Treino livre" instead of the
+    // real routine name for a session that does have a routineId.
+    await waitFor(() => expect(screen.getByText('Carregando sessões...')).toBeInTheDocument())
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(screen.getByText('Carregando sessões...')).toBeInTheDocument()
+    expect(screen.queryByText('Treino livre')).not.toBeInTheDocument()
+
+    resolveRoutines()
+    expect(await screen.findByText('Treino A')).toBeInTheDocument()
+  })
 })

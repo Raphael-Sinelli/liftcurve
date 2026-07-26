@@ -1,6 +1,8 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
+import { server } from '../../test/mocks/server'
 import { renderWithProviders } from '../../test/renderWithProviders'
 import { setAccessToken } from '../../lib/tokenStore'
 import { VALID_ACCESS_TOKEN } from '../../test/mocks/handlers'
@@ -24,5 +26,39 @@ describe('ProgressionSection', () => {
 
     await waitFor(() => expect(screen.queryByText(/Platô ativo/)).not.toBeInTheDocument())
     expect(screen.queryByText('Nenhum dado registrado ainda pra esse exercício.')).not.toBeInTheDocument()
+  })
+
+  it('shows the loading state (never the false empty state) while exercises are still resolving', async () => {
+    setAccessToken(VALID_ACCESS_TOKEN)
+    let resolveExercises: () => void = () => {}
+    const exercisesGate = new Promise<void>((resolve) => {
+      resolveExercises = resolve
+    })
+    server.use(
+      http.get('/exercises', async () => {
+        await exercisesGate
+        return HttpResponse.json([
+          {
+            id: 'ex-custom-1',
+            name: 'Supino Inclinado Halteres',
+            muscle_group_id: 'mg-chest',
+            muscle_group_name: 'Peito',
+            owner_id: 'demo-user-id',
+            created_at: '2026-01-02T00:00:00Z',
+          },
+        ])
+      }),
+    )
+
+    renderWithProviders(<ProgressionSection />)
+
+    // effectiveExerciseId is still '' at this point (exercises haven't resolved), so the
+    // progression query is disabled. If loading isn't gated on useExercises() too, this would
+    // incorrectly render the empty state instead of the loading indicator.
+    expect(screen.getByText('Carregando...')).toBeInTheDocument()
+    expect(screen.queryByText('Nenhum dado registrado ainda pra esse exercício.')).not.toBeInTheDocument()
+
+    resolveExercises()
+    await waitFor(() => expect(screen.queryByText('Carregando...')).not.toBeInTheDocument())
   })
 })
