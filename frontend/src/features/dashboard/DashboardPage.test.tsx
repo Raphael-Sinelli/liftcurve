@@ -16,7 +16,7 @@ describe('DashboardPage', () => {
     // Data-derived assertions: these can only pass if the plateau alert actually loaded and
     // rendered, and if every section's loading indicator actually resolved — unlike the 4
     // assertions above, which render unconditionally even when every dashboard endpoint 500s.
-    expect(await screen.findByText('Supino Inclinado Halteres')).toBeInTheDocument()
+    expect(await screen.findByText('Considere reduzir a carga em ~10% por 1 semana (deload).')).toBeInTheDocument()
     await waitFor(() => expect(screen.queryByText('Carregando...')).not.toBeInTheDocument())
   })
 })
