@@ -453,4 +453,12 @@ export const handlers = [
       },
     ]),
   ),
+
+  http.get('/dashboard/volume', () =>
+    HttpResponse.json([
+      { muscle_group_id: 'mg-chest', week_start_utc: '2026-07-06T00:00:00Z', total_volume_kg: 1200 },
+      { muscle_group_id: 'mg-back', week_start_utc: '2026-07-06T00:00:00Z', total_volume_kg: 900 },
+      { muscle_group_id: 'mg-chest', week_start_utc: '2026-07-13T00:00:00Z', total_volume_kg: 1300 },
+    ]),
+  ),
 ]
