@@ -4,7 +4,7 @@
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Quarkus](https://img.shields.io/badge/Quarkus-3.37-blue)
 ![React](https://img.shields.io/badge/React-19-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-blue)
 
 Rastreador de progressão de treino de força com estimativa de 1RM, agregação de volume por
 grupo muscular e detecção automática de platô.
