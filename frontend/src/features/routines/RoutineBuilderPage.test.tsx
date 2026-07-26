@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Route, Routes } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
@@ -47,8 +47,10 @@ describe('RoutineBuilderPage', () => {
     setAccessToken(VALID_ACCESS_TOKEN)
     renderWithProviders(<BuilderUnderTest />, { route: '/routines/routine-1' })
     await waitFor(() => expect(screen.getByDisplayValue('Treino A')).toBeInTheDocument())
-    // Verify the exercise is loaded by checking for the exercise name within the exercise section
-    const allExerciseTexts = screen.getAllByText('Supino Reto')
-    expect(allExerciseTexts.length).toBeGreaterThan(0)
+    // Verify the correct exercise is selected in the visible combobox trigger (not just present
+    // somewhere in the DOM — Radix's hidden native <select> fallback always lists every option).
+    await waitFor(() => {
+      expect(within(screen.getByRole('combobox')).getByText('Supino Reto')).toBeInTheDocument()
+    })
   })
 })

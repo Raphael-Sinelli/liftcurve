@@ -58,8 +58,8 @@ export function RoutineBuilderPage() {
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<RoutineFormValues>({
-    resolver: zodResolver(routineSchema) as any,
+  } = useForm<z.input<typeof routineSchema>, unknown, RoutineFormValues>({
+    resolver: zodResolver(routineSchema),
     defaultValues: { name: '', description: null, exercises: [EMPTY_ROW] },
   })
 
@@ -83,12 +83,11 @@ export function RoutineBuilderPage() {
     }
   }, [existingRoutine, reset])
 
-  async function onSubmit(values: any) {
-    const typedValues = values as RoutineFormValues
+  async function onSubmit(values: RoutineFormValues) {
     const payload = {
-      name: typedValues.name,
-      description: typedValues.description,
-      exercises: typedValues.exercises.map((row) => ({
+      name: values.name,
+      description: values.description,
+      exercises: values.exercises.map((row) => ({
         exerciseId: row.exerciseId,
         plannedSets: row.plannedSets,
         plannedReps: row.plannedReps,
