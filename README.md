@@ -28,7 +28,7 @@ cd backend
 # frontend (http://localhost:5173)
 cd frontend
 npm install
-npm run dev
+npm run dev      # chamadas de API são encaminhadas pro backend via proxy do Vite (vite.config.ts), não precisa configurar VITE_API_BASE_URL em dev
 ```
 
 ## Conta demo
@@ -72,6 +72,15 @@ cd backend && ./mvnw verify
 cd frontend && npm run build
 ```
 
+### Frontend
+
+```bash
+cd frontend
+npm run lint    # oxlint
+npm run test    # Vitest + Testing Library + MSW
+npm run build   # tsc -b && vite build
+```
+
 ## Status
 
 - [x] Sprint 0 — Fundações
@@ -79,6 +88,7 @@ cd frontend && npm run build
 - [x] Sprint 2 — Exercícios + Rotinas
 - [x] Sprint 3 — Sessões + Domínio Core (1RM, volume, platô)
 - [x] Sprint 4 — API polish + Seed
-- [ ] Sprint 5 — Frontend Core
+- [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
+- [ ] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
 - [ ] Sprint 6 — Testes, CI/CD, Deploy
 - [ ] Sprint 7 — README final + Polish
