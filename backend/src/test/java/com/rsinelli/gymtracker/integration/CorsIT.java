@@ -20,7 +20,12 @@ class CorsIT {
             .get("/muscle-groups")
         .then()
             .statusCode(200)
-            .header("Access-Control-Allow-Origin", equalTo("http://localhost:5173"));
+            .header("Access-Control-Allow-Origin", equalTo("http://localhost:5173"))
+            // A app só autentica via Bearer token (nunca cookies), então este header
+            // precisa ficar explicitamente false. Sem quarkus.http.cors.access-control-allow-credentials=false
+            // no application.properties, o Quarkus 3.37.3 computa "originMatched" (true)
+            // como default quando cors.origins é uma lista concreta — ver application.properties.
+            .header("Access-Control-Allow-Credentials", equalTo("false"));
     }
 
     @Test
