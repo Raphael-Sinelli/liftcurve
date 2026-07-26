@@ -11,7 +11,7 @@ describe('ProgressionSection', () => {
     setAccessToken(VALID_ACCESS_TOKEN)
     renderWithProviders(<ProgressionSection />)
     expect(await screen.findByText(/Platô ativo/)).toBeInTheDocument()
-    expect(screen.getByText('Nenhum dado registrado ainda pra esse exercício.')).toBeInTheDocument()
+    expect(await screen.findByText('Nenhum dado registrado ainda pra esse exercício.')).toBeInTheDocument()
   })
 
   it('switching to an exercise with data hides the banner and the empty state', async () => {

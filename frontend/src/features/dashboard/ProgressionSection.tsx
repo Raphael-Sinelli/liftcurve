@@ -11,7 +11,7 @@ export function ProgressionSection() {
   const [selectedExerciseId, setSelectedExerciseId] = useState('')
   const effectiveExerciseId = selectedExerciseId || sortedExercises[0]?.id || ''
 
-  const { data: progression } = useProgression(effectiveExerciseId)
+  const { data: progression, isLoading } = useProgression(effectiveExerciseId)
   const { data: plateaus } = usePlateaus()
 
   const activePlateau = plateaus?.find((alert) => alert.exerciseId === effectiveExerciseId)
@@ -36,7 +36,9 @@ export function ProgressionSection() {
         </p>
       )}
 
-      {chartData.length === 0 ? (
+      {isLoading ? (
+        <p className="mt-4 font-body text-muted">Carregando...</p>
+      ) : chartData.length === 0 ? (
         <p className="mt-4 font-body text-muted">Nenhum dado registrado ainda pra esse exercício.</p>
       ) : (
         <div className="mt-4">
