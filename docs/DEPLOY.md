@@ -1,4 +1,4 @@
-# Deploy — gym-progress-tracker
+# Deploy — LiftCurve
 
 Backend no Render (Docker), frontend na Vercel. Passo a passo completo — sem CLI, só os
 painéis web dos dois serviços.
@@ -6,7 +6,7 @@ painéis web dos dois serviços.
 ## 1. Banco de dados (Render Postgres)
 
 1. No painel do Render (render.com), clique em **New +** → **PostgreSQL**.
-2. Nome: `gym-progress-tracker-db` (ou o que preferir). Região: a mesma que vai usar pro
+2. Nome: `liftcurve-db` (ou o que preferir). Região: a mesma que vai usar pro
    backend (latência menor). Plano: Free.
 3. Depois de criado, abra a instância e copie os valores da seção **Connections**:
    - **Hostname**
@@ -42,7 +42,7 @@ painéis web dos dois serviços.
    procure pela linha do Flyway confirmando as migrations e, se `GYMTRACKER_SEED_DEMO=true`,
    a linha do `DemoSeeder`.
 8. Depois que o deploy terminar, o Render mostra a URL pública do serviço (algo como
-   `https://gym-progress-tracker-backend.onrender.com`). **Anote essa URL** — vai precisar
+   `https://liftcurve.onrender.com`). **Anote essa URL** — vai precisar
    dela nos passos 3 e 4.
 9. Teste rápido: abra `<URL do passo 8>/muscle-groups` no browser — deve devolver uma lista
    JSON de grupos musculares (200 OK, sem autenticação).

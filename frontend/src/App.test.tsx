@@ -6,11 +6,11 @@ import { App } from './App'
 describe('App', () => {
   it('redirects an unauthenticated visitor at "/" to /login', async () => {
     renderWithProviders(<App />, { route: '/' })
-    await waitFor(() => expect(screen.getByText('Gym Progress Tracker')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('LiftCurve')).toBeInTheDocument())
   })
 
   it('redirects an unknown URL through the root redirect to /login when unauthenticated', async () => {
     renderWithProviders(<App />, { route: '/this-does-not-exist' })
-    await waitFor(() => expect(screen.getByText('Gym Progress Tracker')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('LiftCurve')).toBeInTheDocument())
   })
 })

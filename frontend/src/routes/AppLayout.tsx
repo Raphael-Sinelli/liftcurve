@@ -17,7 +17,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-bg">
       <nav className="flex w-48 flex-col justify-between border-r border-line bg-surface p-4">
         <div>
-          <p className="font-display text-lg font-bold text-ink">GPT</p>
+          <p className="font-display text-lg font-bold text-ink">LC</p>
           <ul className="mt-8 flex flex-col gap-1">
             {NAV_ITEMS.map((item) => (
               <li key={item.to}>

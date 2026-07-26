@@ -1,41 +1,60 @@
-# Gym Progress Tracker
+# LiftCurve
 
-Projeto de portfólio: rastreador de progressão de treino com estimativa de 1RM (Epley +
-Brzycki), cálculo de volume por grupo muscular e detecção automática de platô.
+[![CI](https://github.com/Raphael-Sinelli/liftcurve/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/Raphael-Sinelli/liftcurve/actions/workflows/ci.yml?query=branch%3Adevelop)
+![Java](https://img.shields.io/badge/Java-21-blue)
+![Quarkus](https://img.shields.io/badge/Quarkus-3.37-blue)
+![React](https://img.shields.io/badge/React-19-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-blue)
 
-> Em desenvolvimento. Ver `docs/superpowers/specs/` para o design completo e
-> `docs/superpowers/plans/` para os planos de implementação sprint a sprint.
+Rastreador de progressão de treino de força com estimativa de 1RM, agregação de volume por
+grupo muscular e detecção automática de platô.
 
-## Stack
+**App em produção:** [liftcurve.vercel.app](https://liftcurve.vercel.app)
 
-- **Backend:** Java 21, Quarkus, PostgreSQL, JWT (access token) + refresh token opaco, Flyway
-- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Recharts
-- **Testes:** JUnit 5 (unitário) + Testcontainers/RestAssured (integração) no backend, Vitest no frontend
-- **Infra:** Docker Compose, GitHub Actions
+## O problema
 
-## Como rodar localmente
+A maioria dos apps de treino para nesse nível: registrar séries, pesos, repetições. LiftCurve
+vai além — cada série registrada alimenta uma camada de domínio que transforma número bruto
+em decisão de treino:
 
-Pré-requisitos: Java 21, Node 20+, Docker Desktop.
+- **1RM estimado** (Epley + Brzycki) por série, calculado em tempo real.
+- **Volume semanal** agregado por grupo muscular, ao longo de toda a janela de treino.
+- **Detecção automática de platô** — 3 sessões consecutivas sem novo recorde de 1RM disparam
+  um alerta com sugestão de deload. É o diferencial real do projeto: a parte que a maioria
+  dos apps de treino de portfólio não tem, porque exige regra de negócio de verdade, não só
+  CRUD.
 
-```bash
-# sobe o Postgres
-docker compose up -d postgres
+Projeto de portfólio autoral, construído full-stack (Java/Quarkus + React/TypeScript) do
+zero, sprint a sprint, com TDD, revisão de código real a cada etapa, e deploy completo em
+produção.
 
-# backend (http://localhost:8080)
-cd backend
-./mvnw quarkus:dev      # Windows: mvnw.cmd quarkus:dev
+## Stack e decisões de arquitetura
 
-# frontend (http://localhost:5173)
-cd frontend
-npm install
-npm run dev      # chamadas de API são encaminhadas pro backend via proxy do Vite (vite.config.ts), não precisa configurar VITE_API_BASE_URL em dev
-```
+| Camada | Escolha |
+|---|---|
+| Backend | Java 21, Quarkus, Hibernate/Panache (Repository pattern), Flyway |
+| Auth | JWT (access token HS256) + refresh token opaco rotacionado, BCrypt |
+| Frontend | React 19, TypeScript, Vite, TanStack Query, React Router, Recharts, Tailwind CSS |
+| Testes | JUnit 5 (unitário) + Testcontainers/RestAssured (integração) no backend, Vitest + Testing Library + MSW no frontend |
+| Infra | Docker Compose (3 serviços), GitHub Actions (lint+test+build+docker-build em paralelo) |
+| Deploy | Backend no [Render](https://render.com) (Docker), frontend na [Vercel](https://vercel.com) |
+
+Resumo — pra quem quiser se aprofundar nas decisões e no processo:
+- [`docs/superpowers/specs/`](docs/superpowers/specs/) — design original completo do projeto
+  e specs detalhadas de sprints individuais.
+- [`docs/superpowers/plans/`](docs/superpowers/plans/) — plano de implementação task-a-task
+  de cada sprint, incluindo os bugs reais encontrados e corrigidos em cada revisão de código.
+- [`docs/DEPLOY.md`](docs/DEPLOY.md) — passo a passo completo de deploy (Render + Vercel).
+
+## Dashboard
+
+![Dashboard do LiftCurve mostrando progressão de 1RM, volume semanal e alertas de platô](docs/screenshots/dashboard.png)
 
 ## Conta demo
 
 O projeto inclui uma conta pública com histórico de treino já populado (16 semanas, 48
 sessões, 6 exercícios em 5 grupos musculares, incluindo 1 exercício com platô proposital) —
-pra testar o app sem precisar cadastrar nada.
+pra testar o app sem precisar cadastrar nada, direto em produção.
 
 **Credenciais** (fixas, propositalmente públicas — essa conta não guarda nenhum dado
 sensível, é 100% sintética; ver decisão de design em
@@ -57,23 +76,41 @@ de platô — construído com Recharts sobre os mesmos endpoints. A aba "Sessõe
 registrar um treino novo (com ou sem rotina base), adicionar séries em tempo real e ver o
 1RM estimado de cada uma, e finalizar o treino.
 
-**Ligar a seed** (desligada por padrão — nunca roda sozinha em dev/test/CI): setar a env var
-`GYMTRACKER_SEED_DEMO=true` antes de subir a aplicação. Roda uma única vez no boot
-(idempotente — checa se a conta já existe antes de semear de novo). Localmente:
+## Como rodar localmente
+
+Pré-requisitos: Java 21, Node 20+, Docker Desktop.
+
+```bash
+# sobe os 3 serviços (Postgres + backend + frontend)
+docker compose up -d --build
+```
+
+Abre `http://localhost:8081` — a conta demo já vem populada (`GYMTRACKER_SEED_DEMO=true` é o
+default no Compose).
+
+Alternativa em modo dev (hot reload):
+
+```bash
+# sobe só o Postgres
+docker compose up -d postgres
+
+# backend (http://localhost:8080)
+cd backend
+./mvnw quarkus:dev      # Windows: mvnw.cmd quarkus:dev
+
+# frontend (http://localhost:5173)
+cd frontend
+npm install
+npm run dev      # chamadas de API são encaminhadas pro backend via proxy do Vite (vite.config.ts), não precisa configurar VITE_API_BASE_URL em dev
+```
+
+Ligar a seed em modo dev (desligada por padrão nesse caminho — nunca roda sozinha em
+dev/test/CI): setar a env var `GYMTRACKER_SEED_DEMO=true` antes de subir a aplicação. Roda
+uma única vez no boot (idempotente):
 
 ```bash
 GYMTRACKER_SEED_DEMO=true ./mvnw quarkus:dev      # Windows: set GYMTRACKER_SEED_DEMO=true && mvnw.cmd quarkus:dev
 ```
-
-## Deploy
-
-Backend no [Render](https://render.com) (Docker), frontend na [Vercel](https://vercel.com).
-Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
-[`docs/DEPLOY.md`](docs/DEPLOY.md).
-
-<!-- Depois do deploy real, preencher: -->
-<!-- - Frontend: https://... -->
-<!-- - Backend (API): https://... -->
 
 ## Testes
 
@@ -85,17 +122,20 @@ cd backend && ./mvnw test
 cd backend && ./mvnw verify
 
 # frontend
-cd frontend && npm run build
-```
-
-### Frontend
-
-```bash
 cd frontend
 npm run lint    # oxlint
 npm run test    # Vitest + Testing Library + MSW
 npm run build   # tsc -b && vite build
 ```
+
+## Deploy
+
+Backend no [Render](https://render.com) (Docker), frontend na [Vercel](https://vercel.com).
+Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
+[`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+- Frontend: https://liftcurve.vercel.app
+- Backend (API): https://liftcurve.onrender.com
 
 ## Status
 
@@ -107,4 +147,4 @@ npm run build   # tsc -b && vite build
 - [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
 - [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
 - [x] Sprint 6 — Testes, CI/CD, Deploy
-- [ ] Sprint 7 — README final + Polish
+- [x] Sprint 7 — README final + Polish
