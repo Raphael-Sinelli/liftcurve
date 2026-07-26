@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
+import { setAccessToken } from '../lib/tokenStore'
 import { server } from './mocks/server'
 
 if (!Element.prototype.hasPointerCapture) {
@@ -18,5 +19,6 @@ afterEach(() => {
   cleanup()
   server.resetHandlers()
   localStorage.clear()
+  setAccessToken(null)
 })
 afterAll(() => server.close())
