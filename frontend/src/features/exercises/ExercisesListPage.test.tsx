@@ -28,7 +28,7 @@ describe('ExercisesListPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Novo exercício' }))
     await userEvent.type(screen.getByLabelText('Nome'), 'Rosca Direta')
     await userEvent.click(screen.getByRole('combobox'))
-    await userEvent.click(await screen.findByText('Peito'))
+    await userEvent.click(await screen.findByRole('option', { name: 'Peito' }))
     await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
 
     await waitFor(() => expect(screen.getByText('Rosca Direta')).toBeInTheDocument())
