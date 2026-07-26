@@ -19,7 +19,7 @@ Pré-requisitos: Java 21, Node 20+, Docker Desktop.
 
 ```bash
 # sobe o Postgres
-docker compose up -d
+docker compose up -d postgres
 
 # backend (http://localhost:8080)
 cd backend

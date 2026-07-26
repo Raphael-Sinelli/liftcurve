@@ -89,6 +89,9 @@ Agora que as duas URLs existem de verdade:
 - Abra o DevTools do browser → aba Network → confirme que as chamadas de API vão pra URL do
   Render, não `localhost`.
 - Confirme que não há erro de CORS no console do browser.
+- Abra a URL da Vercel direto numa rota interna (ex.: `<url>/dashboard`) — não a raiz — e
+  confirme que carrega normalmente (não um 404), provando que o fallback de SPA está
+  funcionando em produção.
 
 ## Variáveis de ambiente — referência rápida
 
