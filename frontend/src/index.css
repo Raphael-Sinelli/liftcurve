@@ -1,1 +1,30 @@
 @import "tailwindcss";
+@import "@fontsource/big-shoulders-display/700";
+@import "@fontsource/ibm-plex-sans/400";
+@import "@fontsource/ibm-plex-sans/600";
+@import "@fontsource/ibm-plex-mono/400";
+@import "@fontsource/ibm-plex-mono/500";
+
+@theme {
+  --color-bg: #1a1815;
+  --color-surface: #232019;
+  --color-ink: #f2ede1;
+  --color-muted: #96907e;
+  --color-accent: #c1442b;
+  --color-line: #38352c;
+
+  --font-display: "Big Shoulders Display", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-ink font-body;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
