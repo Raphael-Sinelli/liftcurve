@@ -78,6 +78,66 @@ export function resetRoutinesFixture() {
   ]
 }
 
+export const FIXED_SESSION_ID = 'session-1'
+
+interface SessionFixtureSet {
+  id: string
+  exercise_id: string
+  exercise_name: string
+  set_number: number
+  weight_kg: number
+  reps: number
+  rpe: number | null
+  estimated_1rm_epley: number
+  estimated_1rm_brzycki: number | null
+  estimated_1rm_best: number
+  created_at: string
+}
+
+interface SessionFixture {
+  id: string
+  routine_id: string | null
+  started_at: string
+  finished_at: string | null
+  notes: string | null
+  sets: SessionFixtureSet[]
+}
+
+function buildInitialSessionsFixture(): SessionFixture[] {
+  return [
+    {
+      id: FIXED_SESSION_ID,
+      routine_id: 'routine-1',
+      started_at: '2026-07-01T12:00:00Z',
+      finished_at: '2026-07-01T13:00:00Z',
+      notes: null,
+      sets: [
+        {
+          id: 'set-1',
+          exercise_id: 'ex-global-1',
+          exercise_name: 'Supino Reto',
+          set_number: 1,
+          weight_kg: 80,
+          reps: 8,
+          rpe: 8,
+          estimated_1rm_epley: 101.3,
+          estimated_1rm_brzycki: 100,
+          estimated_1rm_best: 101.3,
+          created_at: '2026-07-01T12:05:00Z',
+        },
+      ],
+    },
+  ]
+}
+
+let sessionsFixture: SessionFixture[] = buildInitialSessionsFixture()
+let nextSessionSetId = 2
+
+export function resetSessionsFixture() {
+  sessionsFixture = buildInitialSessionsFixture()
+  nextSessionSetId = 2
+}
+
 function toSummary(routine: RoutineFixture) {
   return {
     id: routine.id,
@@ -256,5 +316,115 @@ export const handlers = [
   http.delete('/routines/:id', ({ params }) => {
     routinesFixture = routinesFixture.filter((r) => r.id !== params.id)
     return new HttpResponse(null, { status: 204 })
+  }),
+
+  http.get('/workout-sessions', () =>
+    HttpResponse.json(
+      sessionsFixture.map((session) => ({
+        id: session.id,
+        routine_id: session.routine_id,
+        started_at: session.started_at,
+        finished_at: session.finished_at,
+        set_count: session.sets.length,
+      })),
+    ),
+  ),
+
+  http.get('/workout-sessions/:id', ({ params }) => {
+    const session = sessionsFixture.find((s) => s.id === params.id)
+    if (!session) {
+      return HttpResponse.json(
+        { error: { code: 'SESSION_NOT_FOUND', message: 'Sessão não encontrada.', status: 404, details: [] } },
+        { status: 404 },
+      )
+    }
+    return HttpResponse.json(session)
+  }),
+
+  http.post('/workout-sessions', async ({ request }) => {
+    const active = sessionsFixture.find((s) => s.finished_at === null)
+    if (active) {
+      return HttpResponse.json(
+        { error: { code: 'SESSION_ALREADY_ACTIVE', message: 'Você já tem um treino em andamento.', status: 409, details: [] } },
+        { status: 409 },
+      )
+    }
+    const body = (await request.json()) as { routine_id?: string | null; notes?: string | null }
+    if (body.routine_id === 'routine-invalid') {
+      return HttpResponse.json(
+        { error: { code: 'INVALID_ROUTINE_REFERENCE', message: 'A rotina selecionada não é válida.', status: 400, details: [] } },
+        { status: 400 },
+      )
+    }
+    const created: SessionFixture = {
+      id: `session-new-${sessionsFixture.length + 1}`,
+      routine_id: body.routine_id ?? null,
+      started_at: '2026-07-25T10:00:00Z',
+      finished_at: null,
+      notes: body.notes ?? null,
+      sets: [],
+    }
+    sessionsFixture = [...sessionsFixture, created]
+    return HttpResponse.json(created, { status: 201 })
+  }),
+
+  http.patch('/workout-sessions/:id', async ({ params, request }) => {
+    const session = sessionsFixture.find((s) => s.id === params.id)
+    if (!session) {
+      return HttpResponse.json(
+        { error: { code: 'SESSION_NOT_FOUND', message: 'Sessão não encontrada.', status: 404, details: [] } },
+        { status: 404 },
+      )
+    }
+    if (session.finished_at !== null) {
+      return HttpResponse.json(
+        { error: { code: 'SESSION_ALREADY_FINISHED', message: 'Este treino já foi finalizado.', status: 409, details: [] } },
+        { status: 409 },
+      )
+    }
+    const body = (await request.json()) as { notes?: string | null }
+    const updated: SessionFixture = { ...session, finished_at: '2026-07-25T11:00:00Z', notes: body.notes ?? session.notes }
+    sessionsFixture = sessionsFixture.map((s) => (s.id === params.id ? updated : s))
+    return HttpResponse.json(updated)
+  }),
+
+  http.post('/workout-sessions/:id/sets', async ({ params, request }) => {
+    const session = sessionsFixture.find((s) => s.id === params.id)
+    if (!session) {
+      return HttpResponse.json(
+        { error: { code: 'SESSION_NOT_FOUND', message: 'Sessão não encontrada.', status: 404, details: [] } },
+        { status: 404 },
+      )
+    }
+    if (session.finished_at !== null) {
+      return HttpResponse.json(
+        { error: { code: 'SESSION_ALREADY_FINISHED', message: 'Este treino já foi finalizado.', status: 409, details: [] } },
+        { status: 409 },
+      )
+    }
+    const body = (await request.json()) as { exercise_id: string; weight_kg: number; reps: number; rpe?: number | null }
+    if (body.exercise_id === 'ex-invalid') {
+      return HttpResponse.json(
+        { error: { code: 'INVALID_EXERCISE_REFERENCE', message: 'Um dos exercícios selecionados não é válido.', status: 400, details: [] } },
+        { status: 400 },
+      )
+    }
+    const setNumber = session.sets.filter((s) => s.exercise_id === body.exercise_id).length + 1
+    const createdSet: SessionFixtureSet = {
+      id: `set-${nextSessionSetId++}`,
+      exercise_id: body.exercise_id,
+      exercise_name: body.exercise_id === 'ex-global-1' ? 'Supino Reto' : 'Exercício',
+      set_number: setNumber,
+      weight_kg: body.weight_kg,
+      reps: body.reps,
+      rpe: body.rpe ?? null,
+      estimated_1rm_epley: body.weight_kg * (1 + body.reps / 30),
+      estimated_1rm_brzycki: body.reps < 37 ? (body.weight_kg * 36) / (37 - body.reps) : null,
+      estimated_1rm_best: body.weight_kg * (1 + body.reps / 30),
+      created_at: '2026-07-25T10:05:00Z',
+    }
+    session.sets = [...session.sets, createdSet]
+    sessionsFixture = sessionsFixture.map((s) => (s.id === params.id ? session : s))
+    return HttpResponse.json(createdSet, { status: 201 })
   }),
 ]
