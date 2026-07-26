@@ -77,4 +77,33 @@ describe('AuthProvider', () => {
     await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('none'))
     expect(queryClient.getQueryCache().getAll().length).toBe(0)
   })
+
+  it('logout also clears session and dashboard query keys introduced in Sprint 5b', async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    queryClient.setQueryData(['workout-sessions'], [{ id: 'seeded' }])
+    queryClient.setQueryData(['dashboard', 'volume'], [{ seeded: true }])
+    expect(queryClient.getQueryCache().getAll().length).toBeGreaterThan(0)
+
+    function Probe() {
+      const { logout } = useAuth()
+      return (
+        <button type="button" onClick={() => void logout()}>
+          logout
+        </button>
+      )
+    }
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Probe />
+        </AuthProvider>
+      </QueryClientProvider>,
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'logout' }))
+
+    await waitFor(() => expect(queryClient.getQueryData(['workout-sessions'])).toBeUndefined())
+    expect(queryClient.getQueryData(['dashboard', 'volume'])).toBeUndefined()
+  })
 })

@@ -9,7 +9,7 @@ function RegisterUnderTest() {
   return (
     <Routes>
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/exercises" element={<p>Página de exercícios</p>} />
+      <Route path="/dashboard" element={<p>Página de dashboard</p>} />
     </Routes>
   )
 }
@@ -33,12 +33,12 @@ describe('RegisterPage', () => {
     expect(await screen.findByText('Este email já está cadastrado.')).toBeInTheDocument()
   })
 
-  it('navigates to /exercises after a successful registration (auto-login)', async () => {
+  it('navigates to /dashboard after a successful registration (auto-login)', async () => {
     renderWithProviders(<RegisterUnderTest />, { route: '/register' })
     await userEvent.type(screen.getByLabelText('Nome'), 'Raphael')
     await userEvent.type(screen.getByLabelText('Email'), 'new@x.com')
     await userEvent.type(screen.getByLabelText('Senha'), 'longenoughpassword')
     await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
-    await waitFor(() => expect(screen.getByText('Página de exercícios')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Página de dashboard')).toBeInTheDocument())
   })
 })

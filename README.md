@@ -51,6 +51,12 @@ O que você vai ver logando com essa conta:
   5 sessões, feature de detecção funcionando de ponta a ponta.
 - 2 rotinas pré-montadas ("Treino A" e "Treino B").
 
+O dashboard (`/dashboard`, tela inicial após login) mostra esses dados de verdade — gráfico
+de progressão de 1RM por exercício, volume semanal por grupo muscular, e a lista de alertas
+de platô — construído com Recharts sobre os mesmos endpoints. A aba "Sessões" deixa
+registrar um treino novo (com ou sem rotina base), adicionar séries em tempo real e ver o
+1RM estimado de cada uma, e finalizar o treino.
+
 **Ligar a seed** (desligada por padrão — nunca roda sozinha em dev/test/CI): setar a env var
 `GYMTRACKER_SEED_DEMO=true` antes de subir a aplicação. Roda uma única vez no boot
 (idempotente — checa se a conta já existe antes de semear de novo). Localmente:
@@ -89,6 +95,6 @@ npm run build   # tsc -b && vite build
 - [x] Sprint 3 — Sessões + Domínio Core (1RM, volume, platô)
 - [x] Sprint 4 — API polish + Seed
 - [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
-- [ ] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
+- [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
 - [ ] Sprint 6 — Testes, CI/CD, Deploy
 - [ ] Sprint 7 — README final + Polish

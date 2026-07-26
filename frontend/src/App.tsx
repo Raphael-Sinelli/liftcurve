@@ -6,6 +6,9 @@ import { RegisterPage } from './features/auth/RegisterPage'
 import { ExercisesListPage } from './features/exercises/ExercisesListPage'
 import { RoutinesListPage } from './features/routines/RoutinesListPage'
 import { RoutineBuilderPage } from './features/routines/RoutineBuilderPage'
+import { DashboardPage } from './features/dashboard/DashboardPage'
+import { SessionsListPage } from './features/sessions/SessionsListPage'
+import { SessionDetailPage } from './features/sessions/SessionDetailPage'
 import { useAuth } from './context/AuthContext'
 
 function RedirectRoot() {
@@ -13,7 +16,7 @@ function RedirectRoot() {
   if (isLoading) {
     return null
   }
-  return <Navigate to={user ? '/exercises' : '/login'} replace />
+  return <Navigate to={user ? '/dashboard' : '/login'} replace />
 }
 
 export function App() {
@@ -58,6 +61,36 @@ export function App() {
           <ProtectedRoute>
             <AppLayout>
               <RoutineBuilderPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <DashboardPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sessions"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <SessionsListPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sessions/:id"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <SessionDetailPage />
             </AppLayout>
           </ProtectedRoute>
         }

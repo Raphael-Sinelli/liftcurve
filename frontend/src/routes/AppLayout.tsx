@@ -4,6 +4,8 @@ import { Button } from '../components/Button'
 import { useAuth } from '../context/AuthContext'
 
 const NAV_ITEMS = [
+  { to: '/dashboard', label: 'Dashboard' },
+  { to: '/sessions', label: 'Sessões' },
   { to: '/exercises', label: 'Exercícios' },
   { to: '/routines', label: 'Rotinas' },
 ]
