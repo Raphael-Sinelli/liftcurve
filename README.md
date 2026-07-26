@@ -147,4 +147,4 @@ Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
 - [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
 - [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
 - [x] Sprint 6 — Testes, CI/CD, Deploy
-- [ ] Sprint 7 — README final + Polish
+- [x] Sprint 7 — README final + Polish
