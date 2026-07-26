@@ -106,5 +106,5 @@ npm run build   # tsc -b && vite build
 - [x] Sprint 4 — API polish + Seed
 - [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
 - [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
-- [ ] Sprint 6 — Testes, CI/CD, Deploy
+- [x] Sprint 6 — Testes, CI/CD, Deploy
 - [ ] Sprint 7 — README final + Polish
