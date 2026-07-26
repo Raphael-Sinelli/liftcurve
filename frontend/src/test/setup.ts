@@ -3,6 +3,7 @@ import { cleanup } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
 import { setAccessToken } from '../lib/tokenStore'
 import { server } from './mocks/server'
+import { resetExercisesFixture } from './mocks/handlers'
 
 if (!Element.prototype.hasPointerCapture) {
   Element.prototype.hasPointerCapture = () => false
@@ -20,5 +21,6 @@ afterEach(() => {
   server.resetHandlers()
   localStorage.clear()
   setAccessToken(null)
+  resetExercisesFixture()
 })
 afterAll(() => server.close())
