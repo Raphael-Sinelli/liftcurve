@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   push:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   backend:
@@ -40,3 +40,12 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run build
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -t gym-progress-tracker-backend ./backend
+      - name: Build frontend image
+        run: docker build --build-arg VITE_API_BASE_URL=http://localhost:8080 -t gym-progress-tracker-frontend ./frontend

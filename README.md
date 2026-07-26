@@ -19,7 +19,7 @@ Pré-requisitos: Java 21, Node 20+, Docker Desktop.
 
 ```bash
 # sobe o Postgres
-docker compose up -d
+docker compose up -d postgres
 
 # backend (http://localhost:8080)
 cd backend
@@ -65,6 +65,16 @@ registrar um treino novo (com ou sem rotina base), adicionar séries em tempo re
 GYMTRACKER_SEED_DEMO=true ./mvnw quarkus:dev      # Windows: set GYMTRACKER_SEED_DEMO=true && mvnw.cmd quarkus:dev
 ```
 
+## Deploy
+
+Backend no [Render](https://render.com) (Docker), frontend na [Vercel](https://vercel.com).
+Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
+[`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+<!-- Depois do deploy real, preencher: -->
+<!-- - Frontend: https://... -->
+<!-- - Backend (API): https://... -->
+
 ## Testes
 
 ```bash
@@ -96,5 +106,5 @@ npm run build   # tsc -b && vite build
 - [x] Sprint 4 — API polish + Seed
 - [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
 - [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
-- [ ] Sprint 6 — Testes, CI/CD, Deploy
+- [x] Sprint 6 — Testes, CI/CD, Deploy
 - [ ] Sprint 7 — README final + Polish
