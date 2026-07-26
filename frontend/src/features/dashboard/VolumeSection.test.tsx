@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 import { server } from '../../test/mocks/server'
@@ -12,6 +12,7 @@ describe('VolumeSection', () => {
     setAccessToken(VALID_ACCESS_TOKEN)
     renderWithProviders(<VolumeSection />)
     await screen.findByText('Volume semanal por grupo muscular')
+    await waitFor(() => expect(screen.queryByText('Carregando...')).not.toBeInTheDocument())
     expect(screen.queryByText('Nenhum volume registrado ainda.')).not.toBeInTheDocument()
   })
 
