@@ -1,34 +1,55 @@
-<img width="1920" height="956" alt="image" src="https://github.com/user-attachments/assets/029b64d9-3b17-45cc-8587-94d861275a21" />
-<img width="1920" height="951" alt="image" src="https://github.com/user-attachments/assets/71a6484a-7f49-482e-8e9f-5f56dcf90664" />
-<img width="1920" height="954" alt="image" src="https://github.com/user-attachments/assets/b106442d-b6c8-4643-9e8d-b09f84083191" />
-<img width="1920" height="949" alt="image" src="https://github.com/user-attachments/assets/f760b5a8-fb01-4de9-b48a-9131cd6137d4" />
-<img width="1920" height="951" alt="image" src="https://github.com/user-attachments/assets/7f127480-209c-4686-9195-efa22ea5623b" />
-<img width="1920" height="955" alt="image" src="https://github.com/user-attachments/assets/b8e411f9-acbd-4323-93a5-29a16145baa2" />
-
 # 🏋️ LiftCurve
 
-A full-stack gym tracking platform built to help users manage workouts, track strength progression, monitor training volume, and analyze performance over time.
+A modern full-stack gym tracking platform built to help users manage workouts, track strength progression, monitor training volume, and analyze long-term performance.
 
-The project was developed as part of my software engineering portfolio, focusing on modern full-stack development practices, clean architecture, REST APIs, authentication, testing, and deployment.
+Built with **Java (Quarkus)**, **React**, **TypeScript**, **PostgreSQL**, and **Docker**, LiftCurve demonstrates modern software engineering practices, including REST APIs, JWT authentication, clean architecture, automated testing, CI/CD, and cloud deployment.
 
 ## 🚀 Live Demo
 
-**Application:** https://liftcurve.vercel.app/login
+🌐 **Application:** https://liftcurve.vercel.app/login
+
+---
 
 ## ✨ Features
 
-- Secure user authentication with JWT
+- Secure authentication with JWT
 - Workout and exercise management
-- Training routine creation
+- Custom training routines
 - Progressive overload tracking
-- 1RM calculation (Epley & Brzycki)
+- One Rep Max (1RM) estimation
 - Weekly training volume analysis
 - Muscle group statistics
 - Plateau detection
-- Interactive dashboard
-- Responsive interface
+- Interactive analytics dashboard
+- Responsive user interface
 
-## 🛠️ Tech Stack
+---
+
+## 📸 Screenshots
+
+### Dashboard
+
+![Dashboard](docs/images/dashboard.png)
+
+### Workout Management
+
+![Workout](docs/images/workout.png)
+
+### Exercise Library
+
+![Exercises](docs/images/exercises.png)
+
+### Analytics
+
+![Analytics](docs/images/analytics.png)
+
+### User Profile
+
+![Profile](docs/images/profile.png)
+
+---
+
+## 🛠 Tech Stack
 
 ### Backend
 
@@ -48,8 +69,8 @@ The project was developed as part of my software engineering portfolio, focusing
 - Vite
 - Tailwind CSS
 - React Router
-- Recharts
 - Axios
+- Recharts
 
 ### DevOps
 
@@ -59,26 +80,23 @@ The project was developed as part of my software engineering portfolio, focusing
 - Render
 - Vercel
 
-## 🏗️ Architecture
+---
 
-The application follows a layered architecture separating presentation, business logic, and data access, making the codebase easier to maintain, test, and extend.
+## 🏗 Architecture
 
 ```
-Frontend (React)
-        │
-        ▼
- REST API (Quarkus)
-        │
-        ▼
- Business Layer
-        │
-        ▼
- PostgreSQL Database
+React
+   │
+REST API
+   │
+Quarkus
+   │
+PostgreSQL
 ```
 
-## 📸 Screenshots
+The application follows a layered architecture, separating presentation, business logic, and persistence layers to improve maintainability, scalability, and testability.
 
-> Screenshots and GIF demonstrations will be added soon.
+---
 
 ## 🚀 Running Locally
 
@@ -115,7 +133,9 @@ npm install
 npm run dev
 ```
 
-## 🧪 Tests
+---
+
+## 🧪 Running Tests
 
 Backend
 
@@ -129,9 +149,11 @@ Frontend
 npm run test
 ```
 
+---
+
 ## 👤 Demo Account
 
-Use the following credentials to explore the application:
+Use the following account to explore the application.
 
 **Email**
 
@@ -145,31 +167,38 @@ demo@gymtracker.app
 DemoGymTracker2026!
 ```
 
+---
+
 ## 🎯 Project Goals
 
-This project was created to demonstrate practical experience with:
+This project was developed to demonstrate practical experience with:
 
 - Full-stack application development
 - REST API design
-- Authentication and authorization
+- JWT authentication
 - Database modeling
-- Dockerized development
+- Dockerized environments
 - Modern React development
-- Clean architecture
+- Clean Architecture
 - Automated testing
-- CI/CD fundamentals
+- CI/CD pipelines
+
+---
 
 ## 📈 Roadmap
 
 - Mobile experience improvements
-- Advanced training analytics
+- Advanced workout analytics
 - Personal records timeline
 - Exercise history filters
 - Export training reports
+
+---
 
 ## 👨‍💻 Author
 
 **Raphael Oliveira Sinelli Mendonça**
 
-- GitHub: https://github.com/Raphael-Sinelli
-- LinkedIn: https://linkedin.com/in/raphael-sinelli-675310321
+GitHub: https://github.com/Raphael-Sinelli
+
+LinkedIn: https://linkedin.com/in/raphael-sinelli-675310321
