@@ -161,7 +161,7 @@ npm test
 
 ## 📚 Documentation
 
-Additional technical documentation is available in the `docs/` directory.
+Additional project documentation is available in the `docs/` directory.
 
 ---
 
@@ -171,9 +171,3 @@ Additional technical documentation is available in the `docs/` directory.
 
 - GitHub: https://github.com/Raphael-Sinelli
 - LinkedIn: https://www.linkedin.com/in/raphael-sinelli-675310321/
-
----
-
-## 📄 License
-
-This project is available for study and portfolio purposes.
