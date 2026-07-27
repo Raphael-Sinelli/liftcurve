@@ -1,110 +1,175 @@
-# Gym Progress Tracker
+<img width="1920" height="956" alt="image" src="https://github.com/user-attachments/assets/029b64d9-3b17-45cc-8587-94d861275a21" />
+<img width="1920" height="951" alt="image" src="https://github.com/user-attachments/assets/71a6484a-7f49-482e-8e9f-5f56dcf90664" />
+<img width="1920" height="954" alt="image" src="https://github.com/user-attachments/assets/b106442d-b6c8-4643-9e8d-b09f84083191" />
+<img width="1920" height="949" alt="image" src="https://github.com/user-attachments/assets/f760b5a8-fb01-4de9-b48a-9131cd6137d4" />
+<img width="1920" height="951" alt="image" src="https://github.com/user-attachments/assets/7f127480-209c-4686-9195-efa22ea5623b" />
+<img width="1920" height="955" alt="image" src="https://github.com/user-attachments/assets/b8e411f9-acbd-4323-93a5-29a16145baa2" />
 
-Projeto de portfólio: rastreador de progressão de treino com estimativa de 1RM (Epley +
-Brzycki), cálculo de volume por grupo muscular e detecção automática de platô.
+# 🏋️ LiftCurve
 
-> Em desenvolvimento. Ver `docs/superpowers/specs/` para o design completo e
-> `docs/superpowers/plans/` para os planos de implementação sprint a sprint.
+A full-stack gym tracking platform built to help users manage workouts, track strength progression, monitor training volume, and analyze performance over time.
 
-## Stack
+The project was developed as part of my software engineering portfolio, focusing on modern full-stack development practices, clean architecture, REST APIs, authentication, testing, and deployment.
 
-- **Backend:** Java 21, Quarkus, PostgreSQL, JWT (access token) + refresh token opaco, Flyway
-- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Recharts
-- **Testes:** JUnit 5 (unitário) + Testcontainers/RestAssured (integração) no backend, Vitest no frontend
-- **Infra:** Docker Compose, GitHub Actions
+## 🚀 Live Demo
 
-## Como rodar localmente
+**Application:** https://liftcurve.vercel.app/login
 
-Pré-requisitos: Java 21, Node 20+, Docker Desktop.
+## ✨ Features
+
+- Secure user authentication with JWT
+- Workout and exercise management
+- Training routine creation
+- Progressive overload tracking
+- 1RM calculation (Epley & Brzycki)
+- Weekly training volume analysis
+- Muscle group statistics
+- Plateau detection
+- Interactive dashboard
+- Responsive interface
+
+## 🛠️ Tech Stack
+
+### Backend
+
+- Java 21
+- Quarkus
+- PostgreSQL
+- Flyway
+- JWT Authentication
+- Maven
+- JUnit 5
+- REST Assured
+
+### Frontend
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Recharts
+- Axios
+
+### DevOps
+
+- Docker
+- Docker Compose
+- GitHub Actions
+- Render
+- Vercel
+
+## 🏗️ Architecture
+
+The application follows a layered architecture separating presentation, business logic, and data access, making the codebase easier to maintain, test, and extend.
+
+```
+Frontend (React)
+        │
+        ▼
+ REST API (Quarkus)
+        │
+        ▼
+ Business Layer
+        │
+        ▼
+ PostgreSQL Database
+```
+
+## 📸 Screenshots
+
+> Screenshots and GIF demonstrations will be added soon.
+
+## 🚀 Running Locally
+
+### Requirements
+
+- Java 21
+- Node.js 20+
+- Docker Desktop
+
+### Clone the repository
 
 ```bash
-# sobe o Postgres
+git clone https://github.com/Raphael-Sinelli/liftcurve.git
+```
+
+### Start PostgreSQL
+
+```bash
 docker compose up -d postgres
+```
 
-# backend (http://localhost:8080)
+### Backend
+
+```bash
 cd backend
-./mvnw quarkus:dev      # Windows: mvnw.cmd quarkus:dev
-
-# frontend (http://localhost:5173)
-cd frontend
-npm install
-npm run dev      # chamadas de API são encaminhadas pro backend via proxy do Vite (vite.config.ts), não precisa configurar VITE_API_BASE_URL em dev
-```
-
-## Conta demo
-
-O projeto inclui uma conta pública com histórico de treino já populado (16 semanas, 48
-sessões, 6 exercícios em 5 grupos musculares, incluindo 1 exercício com platô proposital) —
-pra testar o app sem precisar cadastrar nada.
-
-**Credenciais** (fixas, propositalmente públicas — essa conta não guarda nenhum dado
-sensível, é 100% sintética; ver decisão de design em
-`docs/superpowers/plans/2026-07-25-sprint4-api-polish-seed.md`):
-
-- Email: `demo@gymtracker.app`
-- Senha: `DemoGymTracker2026!`
-
-O que você vai ver logando com essa conta:
-- **Progressão de 1RM**: gráfico crescente em 5 dos 6 exercícios ao longo de ~4 meses.
-- **Volume semanal**: agregado por grupo muscular, toda a janela de 16 semanas.
-- **Alerta de platô**: "Rosca Direta" (Bíceps) mostra platô ativo — carga travada nas últimas
-  5 sessões, feature de detecção funcionando de ponta a ponta.
-- 2 rotinas pré-montadas ("Treino A" e "Treino B").
-
-O dashboard (`/dashboard`, tela inicial após login) mostra esses dados de verdade — gráfico
-de progressão de 1RM por exercício, volume semanal por grupo muscular, e a lista de alertas
-de platô — construído com Recharts sobre os mesmos endpoints. A aba "Sessões" deixa
-registrar um treino novo (com ou sem rotina base), adicionar séries em tempo real e ver o
-1RM estimado de cada uma, e finalizar o treino.
-
-**Ligar a seed** (desligada por padrão — nunca roda sozinha em dev/test/CI): setar a env var
-`GYMTRACKER_SEED_DEMO=true` antes de subir a aplicação. Roda uma única vez no boot
-(idempotente — checa se a conta já existe antes de semear de novo). Localmente:
-
-```bash
-GYMTRACKER_SEED_DEMO=true ./mvnw quarkus:dev      # Windows: set GYMTRACKER_SEED_DEMO=true && mvnw.cmd quarkus:dev
-```
-
-## Deploy
-
-Backend no [Render](https://render.com) (Docker), frontend na [Vercel](https://vercel.com).
-Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
-[`docs/DEPLOY.md`](docs/DEPLOY.md).
-
-<!-- Depois do deploy real, preencher: -->
-<!-- - Frontend: https://... -->
-<!-- - Backend (API): https://... -->
-
-## Testes
-
-```bash
-# backend — unitários (sem Docker)
-cd backend && ./mvnw test
-
-# backend — integração (precisa de Docker rodando)
-cd backend && ./mvnw verify
-
-# frontend
-cd frontend && npm run build
+./mvnw quarkus:dev
 ```
 
 ### Frontend
 
 ```bash
 cd frontend
-npm run lint    # oxlint
-npm run test    # Vitest + Testing Library + MSW
-npm run build   # tsc -b && vite build
+npm install
+npm run dev
 ```
 
-## Status
+## 🧪 Tests
 
-- [x] Sprint 0 — Fundações
-- [x] Sprint 1 — Schema + Auth
-- [x] Sprint 2 — Exercícios + Rotinas
-- [x] Sprint 3 — Sessões + Domínio Core (1RM, volume, platô)
-- [x] Sprint 4 — API polish + Seed
-- [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
-- [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
-- [x] Sprint 6 — Testes, CI/CD, Deploy
-- [ ] Sprint 7 — README final + Polish
+Backend
+
+```bash
+./mvnw test
+```
+
+Frontend
+
+```bash
+npm run test
+```
+
+## 👤 Demo Account
+
+Use the following credentials to explore the application:
+
+**Email**
+
+```
+demo@gymtracker.app
+```
+
+**Password**
+
+```
+DemoGymTracker2026!
+```
+
+## 🎯 Project Goals
+
+This project was created to demonstrate practical experience with:
+
+- Full-stack application development
+- REST API design
+- Authentication and authorization
+- Database modeling
+- Dockerized development
+- Modern React development
+- Clean architecture
+- Automated testing
+- CI/CD fundamentals
+
+## 📈 Roadmap
+
+- Mobile experience improvements
+- Advanced training analytics
+- Personal records timeline
+- Exercise history filters
+- Export training reports
+
+## 👨‍💻 Author
+
+**Raphael Oliveira Sinelli Mendonça**
+
+- GitHub: https://github.com/Raphael-Sinelli
+- LinkedIn: https://linkedin.com/in/raphael-sinelli-675310321
