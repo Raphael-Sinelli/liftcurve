@@ -1,45 +1,38 @@
 # 🏋️ LiftCurve
 
 <p align="center">
-  <img src="docs/images/demo.gif" alt="LiftCurve Demo" width="900">
+  <img src="docs/images/demo(1).gif" alt="LiftCurve Demo" width="100%">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
-  <img src="https://img.shields.io/badge/Quarkus-4695EB?style=for-the-badge&logo=quarkus&logoColor=white" alt="Quarkus"/>
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
-  <img src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"/>
+
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Quarkus](https://img.shields.io/badge/Quarkus-3-blue)
+![React](https://img.shields.io/badge/React-19-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791)
+![Docker](https://img.shields.io/badge/Docker-Container-2496ED)
+
 </p>
 
-A modern full-stack gym tracking platform designed to help users manage workouts, track strength progression, monitor training volume, and analyze long-term performance.
+LiftCurve is a full-stack workout tracking application built with **Java, Quarkus, React and TypeScript**. It allows users to organize workout routines, manage exercises, record training sessions and monitor strength progression through interactive analytics.
 
-Built with **Java (Quarkus)**, **React**, **TypeScript**, **PostgreSQL**, and **Docker**, LiftCurve showcases modern software engineering practices, including RESTful APIs, JWT authentication, Clean Architecture, automated testing, CI/CD, and cloud deployment.
+## 🚀 Live Demo
 
----
+**Application:** https://liftcurve.vercel.app
 
-# 🚀 Live Demo
-
-### 🌐 Application
-
-https://liftcurve.vercel.app/login
-
-A pre-populated demo account is available, allowing the application to be explored immediately with realistic workout data.
+A pre-populated **Demo Account** is available directly from the login screen through **"Entrar como Visitante (Conta Demo)"**, allowing recruiters to explore every feature immediately.
 
 ---
 
-# ✨ Key Features
+# ✨ Features
 
-- JWT authentication and authorization
+- JWT Authentication
 - Workout session management
 - Exercise library
-- Custom training routines
-- Progressive overload tracking
-- One Rep Max (1RM) estimation
+- Training routines
+- One Rep Max (1RM) progression chart
 - Weekly training volume analytics
-- Muscle group statistics
-- Plateau detection
 - Interactive dashboard
 - Responsive interface
 
@@ -47,41 +40,31 @@ A pre-populated demo account is available, allowing the application to be explor
 
 # 📸 Screenshots
 
+## Login
+
+![](docs/images/login.png)
+
 ## Dashboard
 
-<p align="center">
-  <img src="docs/images/dashboard.png" width="900" alt="Dashboard">
-</p>
-
----
+![](docs/images/dashboard.png)
 
 ## Workout Sessions
 
-<p align="center">
-  <img src="docs/images/sessions.png" width="900" alt="Workout Sessions">
-</p>
-
----
+![](docs/images/sessions.png)
 
 ## Exercise Library
 
-<p align="center">
-  <img src="docs/images/exercises.png" width="900" alt="Exercise Library">
-</p>
-
----
+![](docs/images/exercises.png)
 
 ## Training Routines
 
-<p align="center">
-  <img src="docs/images/routines.png" width="900" alt="Training Routines">
-</p>
+![](docs/images/routines.png)
 
 ---
 
 # 🛠 Tech Stack
 
-### Backend
+## Backend
 
 - Java 21
 - Quarkus
@@ -89,10 +72,8 @@ A pre-populated demo account is available, allowing the application to be explor
 - Flyway
 - JWT Authentication
 - Maven
-- JUnit 5
-- REST Assured
 
-### Frontend
+## Frontend
 
 - React
 - TypeScript
@@ -102,7 +83,7 @@ A pre-populated demo account is available, allowing the application to be explor
 - Axios
 - Recharts
 
-### DevOps
+## DevOps
 
 - Docker
 - Docker Compose
@@ -117,17 +98,12 @@ A pre-populated demo account is available, allowing the application to be explor
 ```text
 React + TypeScript
         │
-        ▼
  REST API (Quarkus)
         │
-        ▼
  Business Layer
         │
-        ▼
- PostgreSQL
+   PostgreSQL
 ```
-
-The application follows a layered architecture that separates presentation, business logic, and persistence, improving maintainability, scalability, and testability.
 
 ---
 
@@ -136,29 +112,23 @@ The application follows a layered architecture that separates presentation, busi
 ## Prerequisites
 
 - Java 21
-- Node.js 20+
+- Node.js
 - Docker Desktop
 
-## Clone the repository
+## Clone
 
 ```bash
 git clone https://github.com/Raphael-Sinelli/liftcurve.git
 ```
 
-## Start PostgreSQL
-
-```bash
-docker compose up -d postgres
-```
-
-## Run Backend
+## Backend
 
 ```bash
 cd backend
 ./mvnw quarkus:dev
 ```
 
-## Run Frontend
+## Frontend
 
 ```bash
 cd frontend
@@ -170,13 +140,13 @@ npm run dev
 
 # 🧪 Running Tests
 
-### Backend
+Backend
 
 ```bash
 ./mvnw test
 ```
 
-### Frontend
+Frontend
 
 ```bash
 npm run test
@@ -184,33 +154,13 @@ npm run test
 
 ---
 
-# 👤 Demo Account
-
-Email
+# 📁 Project Structure
 
 ```text
-demo@gymtracker.app
+backend/
+frontend/
+docs/
 ```
-
-Password
-
-```text
-DemoGymTracker2026!
-```
-
----
-
-# ⭐ Highlights
-
-- Full-stack application architecture
-- RESTful API development
-- JWT authentication
-- PostgreSQL database modeling
-- Dockerized development environment
-- Automated testing
-- CI/CD pipeline
-- Cloud deployment
-- Clean Architecture principles
 
 ---
 
@@ -218,8 +168,6 @@ DemoGymTracker2026!
 
 **Raphael Oliveira Sinelli Mendonça**
 
-GitHub  
-https://github.com/Raphael-Sinelli
+GitHub: https://github.com/Raphael-Sinelli
 
-LinkedIn  
-https://linkedin.com/in/raphael-sinelli-675310321
+LinkedIn: https://linkedin.com/in/raphael-sinelli-675310321
