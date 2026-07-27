@@ -1,7 +1,7 @@
 # 🏋️ LiftCurve
 
 <p align="center">
-  <img src="docs/images/demo(1).gif" alt="LiftCurve Demo" width="100%">
+  <img src="./docs/images/demo.gif" alt="LiftCurve Demo" width="100%">
 </p>
 
 <p align="center">
