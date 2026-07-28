@@ -6,27 +6,58 @@
 ![React](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-blue)
 
-Rastreador de progressão de treino de força com estimativa de 1RM, agregação de volume por
-grupo muscular e detecção automática de platô.
+Rastreador de progressão de treino de força — estimativa de 1RM, volume por grupo
+muscular, detecção automática de platô.
 
 **App em produção:** [liftcurve.vercel.app](https://liftcurve.vercel.app)
 
 ## O problema
 
-A maioria dos apps de treino para nesse nível: registrar séries, pesos, repetições. LiftCurve
-vai além — cada série registrada alimenta uma camada de domínio que transforma número bruto
-em decisão de treino:
+A maioria dos apps de treino param nesse nível: registrar séries, pesos, repetições.
+LiftCurve vai além — cada série registrada alimenta uma camada de domínio que transforma
+número bruto em decisão de treino:
 
 - **1RM estimado** (Epley + Brzycki) por série, calculado em tempo real.
 - **Volume semanal** agregado por grupo muscular, ao longo de toda a janela de treino.
-- **Detecção automática de platô** — 3 sessões consecutivas sem novo recorde de 1RM disparam
-  um alerta com sugestão de deload. É o diferencial real do projeto: a parte que a maioria
-  dos apps de treino de portfólio não tem, porque exige regra de negócio de verdade, não só
-  CRUD.
+- **Detecção automática de platô** — 3 sessões consecutivas sem novo recorde de 1RM
+  disparam um alerta com sugestão de deload.
+
+Esse último ponto é o diferencial real do projeto: a camada que a maioria dos apps de
+treino de portfólio não tem, porque exige regra de negócio de verdade, não só CRUD.
 
 Projeto de portfólio autoral, construído full-stack (Java/Quarkus + React/TypeScript) do
 zero, sprint a sprint, com TDD, revisão de código real a cada etapa, e deploy completo em
 produção.
+
+## Dashboard
+
+Isso em produção, logado com a conta demo (credenciais abaixo):
+
+![Dashboard do LiftCurve mostrando progressão de 1RM, volume semanal e alertas de platô](docs/screenshots/dashboard.png)
+
+## Conta demo
+
+O projeto inclui uma conta pública com histórico de treino já populado (16 semanas, 48
+sessões, 6 exercícios em 5 grupos musculares, incluindo 1 exercício com platô proposital) —
+pra testar o app sem cadastro, direto em produção.
+
+**Credenciais** (fixas, propositalmente públicas — conta 100% sintética, sem dado
+sensível; decisão documentada em
+`docs/superpowers/plans/2026-07-25-sprint4-api-polish-seed.md`):
+
+- Email: `demo@gymtracker.app`
+- Senha: `DemoGymTracker2026!`
+
+O que você vai ver ao logar — o dashboard (`/dashboard`, tela inicial pós-login) é
+construído com Recharts sobre os mesmos endpoints da API:
+
+- **Progressão de 1RM**: gráfico crescente em 5 dos 6 exercícios ao longo de ~4 meses.
+- **Volume semanal**: agregado por grupo muscular, toda a janela de 16 semanas.
+- **Alerta de platô**: "Rosca Direta" (Bíceps) com carga travada nas últimas 5 sessões —
+  a detecção funcionando de ponta a ponta.
+- **Sessões**: aba pra registrar um treino novo (com ou sem rotina base), adicionar séries
+  em tempo real com 1RM calculado na hora, e finalizar o treino.
+- 2 rotinas pré-montadas ("Treino A" e "Treino B").
 
 ## Stack e decisões de arquitetura
 
@@ -39,42 +70,12 @@ produção.
 | Infra | Docker Compose (3 serviços), GitHub Actions (lint+test+build+docker-build em paralelo) |
 | Deploy | Backend no [Render](https://render.com) (Docker), frontend na [Vercel](https://vercel.com) |
 
-Resumo — pra quem quiser se aprofundar nas decisões e no processo:
+Pra quem quiser se aprofundar nas decisões e no processo:
 - [`docs/superpowers/specs/`](docs/superpowers/specs/) — design original completo do projeto
   e specs detalhadas de sprints individuais.
 - [`docs/superpowers/plans/`](docs/superpowers/plans/) — plano de implementação task-a-task
   de cada sprint, incluindo os bugs reais encontrados e corrigidos em cada revisão de código.
 - [`docs/DEPLOY.md`](docs/DEPLOY.md) — passo a passo completo de deploy (Render + Vercel).
-
-## Dashboard
-
-![Dashboard do LiftCurve mostrando progressão de 1RM, volume semanal e alertas de platô](docs/screenshots/dashboard.png)
-
-## Conta demo
-
-O projeto inclui uma conta pública com histórico de treino já populado (16 semanas, 48
-sessões, 6 exercícios em 5 grupos musculares, incluindo 1 exercício com platô proposital) —
-pra testar o app sem precisar cadastrar nada, direto em produção.
-
-**Credenciais** (fixas, propositalmente públicas — essa conta não guarda nenhum dado
-sensível, é 100% sintética; ver decisão de design em
-`docs/superpowers/plans/2026-07-25-sprint4-api-polish-seed.md`):
-
-- Email: `demo@gymtracker.app`
-- Senha: `DemoGymTracker2026!`
-
-O que você vai ver logando com essa conta:
-- **Progressão de 1RM**: gráfico crescente em 5 dos 6 exercícios ao longo de ~4 meses.
-- **Volume semanal**: agregado por grupo muscular, toda a janela de 16 semanas.
-- **Alerta de platô**: "Rosca Direta" (Bíceps) mostra platô ativo — carga travada nas últimas
-  5 sessões, feature de detecção funcionando de ponta a ponta.
-- 2 rotinas pré-montadas ("Treino A" e "Treino B").
-
-O dashboard (`/dashboard`, tela inicial após login) mostra esses dados de verdade — gráfico
-de progressão de 1RM por exercício, volume semanal por grupo muscular, e a lista de alertas
-de platô — construído com Recharts sobre os mesmos endpoints. A aba "Sessões" deixa
-registrar um treino novo (com ou sem rotina base), adicionar séries em tempo real e ver o
-1RM estimado de cada uma, e finalizar o treino.
 
 ## Como rodar localmente
 
