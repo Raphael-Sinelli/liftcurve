@@ -1,13 +1,17 @@
 # LiftCurve
 
+Rastreador de progressão de treino de força — estimativa de 1RM, volume por grupo
+muscular, detecção automática de platô.
+
+<p align="center">
+  <img src="docs/screenshots/demo.gif" alt="Demonstração do LiftCurve: login com conta demo, dashboard com progressão de 1RM, volume semanal e alertas de platô, e log de sessão de treino" width="100%" />
+</p>
+
 [![CI](https://github.com/Raphael-Sinelli/liftcurve/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/Raphael-Sinelli/liftcurve/actions/workflows/ci.yml?query=branch%3Adevelop)
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Quarkus](https://img.shields.io/badge/Quarkus-3.37-blue)
 ![React](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-blue)
-
-Rastreador de progressão de treino de força — estimativa de 1RM, volume por grupo
-muscular, detecção automática de platô.
 
 **App em produção:** [liftcurve.vercel.app](https://liftcurve.vercel.app)
 
@@ -29,11 +33,42 @@ Projeto de portfólio autoral, construído full-stack (Java/Quarkus + React/Type
 zero, sprint a sprint, com TDD, revisão de código real a cada etapa, e deploy completo em
 produção.
 
-## Dashboard
+## Diferenciais
 
-Isso em produção, logado com a conta demo (credenciais abaixo):
+O que separa o LiftCurve de um CRUD de treino comum:
 
-![Dashboard do LiftCurve mostrando progressão de 1RM, volume semanal e alertas de platô](docs/screenshots/dashboard.png)
+- **1RM estimado por 2 fórmulas** (Epley + Brzycki) — usa o maior valor entre as duas em
+  vez de uma estimativa única e arbitrária.
+- **Detecção automática de platô** — 3 sessões consecutivas sem novo recorde disparam
+  alerta com sugestão de deload; o usuário não precisa perceber o platô sozinho.
+- **Volume semanal por grupo muscular** — agregação real sobre o histórico completo de
+  treino, não uma lista solta de séries.
+- **Processo de revisão em camadas** — cada sprint passou por revisão de task e depois
+  revisão de branch inteira antes do merge, e isso pegou bugs reais (não cosméticos) em
+  quase toda sprint: uma property de configuração errada que quebrava toda a autenticação,
+  uma condição de corrida na exclusão de exercício em uso, estado de loading incorreto em
+  3 telas, 3 problemas reais de CORS. Detalhes na seção [Aprendizados](#aprendizados).
+
+## Funcionalidades
+
+- Cadastro e login com JWT (access token + refresh token opaco rotacionado)
+- Catálogo de exercícios global + exercícios customizados por usuário
+- Construtor de rotinas de treino (exercícios, sets, reps, carga planejada)
+- Registro de sessão de treino com séries em tempo real (peso, reps, RPE opcional)
+- Cálculo automático de 1RM estimado a cada série
+- Dashboard com progressão de 1RM, volume semanal por grupo muscular e alertas de platô
+- Conta demo pública com 16 semanas de histórico de treino simulado
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/login.png" alt="Tela de login" width="48%" />
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard com progressão de 1RM, volume semanal e alertas de platô" width="48%" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/exercises.png" alt="Lista de exercícios" width="48%" />
+  <img src="docs/screenshots/sessions.png" alt="Log de sessão de treino finalizada" width="48%" />
+</p>
 
 ## Conta demo
 
@@ -76,6 +111,55 @@ Pra quem quiser se aprofundar nas decisões e no processo:
 - [`docs/superpowers/plans/`](docs/superpowers/plans/) — plano de implementação task-a-task
   de cada sprint, incluindo os bugs reais encontrados e corrigidos em cada revisão de código.
 - [`docs/DEPLOY.md`](docs/DEPLOY.md) — passo a passo completo de deploy (Render + Vercel).
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+    User([Usuário])
+    FE["React 19 + TypeScript<br/>(Vercel)"]
+    API["API REST<br/>Quarkus + Java 21<br/>(Render)"]
+    Auth["JWT + Refresh Token"]
+    Domain["Camada de domínio<br/>1RM · Volume · Platô"]
+    DB[("PostgreSQL")]
+
+    User --> FE
+    FE -- HTTPS / JSON --> API
+    API --> Auth
+    API --> Domain
+    Domain --> DB
+    API --> DB
+```
+
+## Estrutura do projeto
+
+```text
+gym-progress-tracker/
+├── backend/                          # Quarkus (Java 21)
+│   ├── src/main/java/com/rsinelli/gymtracker/
+│   │   ├── resource/                 # Endpoints REST
+│   │   ├── service/                  # Regras de negócio (1RM, volume, platô)
+│   │   ├── repository/               # Panache Repository (acesso a dado)
+│   │   ├── entity/                   # Entidades JPA
+│   │   ├── dto/                      # Request/response (records)
+│   │   ├── exception/                # Exceções + ExceptionMapper
+│   │   ├── security/                 # JWT, CurrentUser, hashing
+│   │   └── seed/                     # Seed da conta demo
+│   ├── src/main/resources/db/migration/  # Migrations Flyway
+│   └── src/test/java/.../unit/       # Testes unitários (calculators)
+│               .../integration/      # Testes de integração (Testcontainers)
+├── frontend/                          # Vite + React + TypeScript
+│   └── src/
+│       ├── api/                      # Clientes HTTP por domínio
+│       ├── components/               # UI compartilhada (Button, Modal, PlateStat...)
+│       ├── context/                  # AuthContext
+│       ├── lib/                      # apiClient, caseConversion, formatDate...
+│       ├── routes/                   # AppLayout, ProtectedRoute
+│       └── features/                 # auth/, exercises/, routines/, sessions/, dashboard/
+├── docs/                              # Specs, plans, screenshots, DEPLOY.md
+├── docker-compose.yml                 # Postgres + backend + frontend
+└── README.md
+```
 
 ## Como rodar localmente
 
@@ -149,3 +233,43 @@ Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
 - [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
 - [x] Sprint 6 — Testes, CI/CD, Deploy
 - [x] Sprint 7 — README final + Polish
+
+## Aprendizados
+
+Cada sprint deste projeto passou por revisão de código real antes do merge — task por
+task, e depois uma revisão de branch inteira. Isso pegou bugs reais, não só nitpicks de
+estilo:
+
+- **Autenticação nunca validava token de verdade** (Sprint 2): a property de configuração
+  estava com o nome errado (`mp.jwt.verify.secretkey` em vez de
+  `smallrye.jwt.verify.secretkey`, o correto para chave simétrica). Como o MicroProfile
+  Config ignora properties desconhecidas silenciosamente, isso nunca gerou erro — só nunca
+  funcionou, porque nunca tinha sido exercitado (Sprint 1 só emitia token, nunca validava).
+- **Condição de corrida na exclusão de exercício em uso** (Sprint 2): deletar um exercício
+  referenciado numa rotina podia estourar uma violação de integridade referencial não
+  tratada. Corrigido capturando a violação no boundary do banco (`SQLState 23503`) e
+  traduzindo pra um erro 409 claro, em vez de checar-e-deletar (que reabriria o mesmo tipo
+  de condição de corrida).
+- **Estado de loading incorreto em 3 telas** (Sprint 5b): queries do React Query
+  desabilitadas (`enabled: false`) retornavam `isLoading: true` mesmo sem nunca terem
+  disparado — as telas ficavam presas num skeleton infinito.
+- **3 problemas reais de CORS** (Sprint 6): property de configuração errada, comportamento
+  de origem não permitida nunca verificado contra o app real, e a necessidade do header
+  `Access-Control-Allow-Credentials` — todos descobertos só quando o CORS ganhou um teste
+  de integração de verdade, não suposição.
+- **Fallback de SPA faltando em produção** (revisão final da Sprint 6): o `vercel.json` não
+  tinha o rewrite pra `index.html` — atualizar a página em qualquer rota client-side (ex.
+  `/dashboard`) devolvia 404 do Vercel.
+
+Histórico completo de cada bug, decisão e correção está em
+[`docs/superpowers/plans/`](docs/superpowers/plans/).
+
+## Autor
+
+Raphael Sinelli
+
+Tecnólogo em Análise e Desenvolvimento de Sistemas — FIAP
+
+- GitHub: https://github.com/Raphael-Sinelli
+- LinkedIn: https://www.linkedin.com/in/raphael-sinelli-675310321/
+- E-mail: raphaelsinelli@gmail.com
