@@ -53,7 +53,7 @@ O que separa o LiftCurve de um CRUD de treino comum:
 
 - Cadastro e login com JWT (access token + refresh token opaco rotacionado)
 - Catálogo de exercícios global + exercícios customizados por usuário
-- Construtor de rotinas de treino (exercícios, sets, reps, carga planejada)
+- Construtor de rotinas de treino (exercícios, séries, reps, carga planejada)
 - Registro de sessão de treino com séries em tempo real (peso, reps, RPE opcional)
 - Cálculo automático de 1RM estimado a cada série
 - Dashboard com progressão de 1RM, volume semanal por grupo muscular e alertas de platô
@@ -135,29 +135,30 @@ flowchart LR
 
 ```text
 gym-progress-tracker/
-├── backend/                          # Quarkus (Java 21)
+├── backend/                                # Quarkus (Java 21)
 │   ├── src/main/java/com/rsinelli/gymtracker/
-│   │   ├── resource/                 # Endpoints REST
-│   │   ├── service/                  # Regras de negócio (1RM, volume, platô)
-│   │   ├── repository/               # Panache Repository (acesso a dado)
-│   │   ├── entity/                   # Entidades JPA
-│   │   ├── dto/                      # Request/response (records)
-│   │   ├── exception/                # Exceções + ExceptionMapper
-│   │   ├── security/                 # JWT, CurrentUser, hashing
-│   │   └── seed/                     # Seed da conta demo
+│   │   ├── resource/                   # Endpoints REST
+│   │   ├── service/                    # Regras de negócio (1RM, volume, platô)
+│   │   ├── repository/                 # Panache Repository (acesso a dado)
+│   │   ├── entity/                     # Entidades JPA
+│   │   ├── dto/                        # Request/response (records)
+│   │   ├── exception/                  # Exceções + ExceptionMapper
+│   │   ├── security/                   # JWT, CurrentUser, hashing
+│   │   └── seed/                       # Seed da conta demo
 │   ├── src/main/resources/db/migration/  # Migrations Flyway
-│   └── src/test/java/.../unit/       # Testes unitários (calculators)
-│               .../integration/      # Testes de integração (Testcontainers)
-├── frontend/                          # Vite + React + TypeScript
+│   └── src/test/java/.../
+│       ├── unit/                         # Testes unitários (calculators)
+│       └── integration/                  # Testes de integração (Testcontainers)
+├── frontend/                               # Vite + React + TypeScript
 │   └── src/
-│       ├── api/                      # Clientes HTTP por domínio
-│       ├── components/               # UI compartilhada (Button, Modal, PlateStat...)
-│       ├── context/                  # AuthContext
-│       ├── lib/                      # apiClient, caseConversion, formatDate...
-│       ├── routes/                   # AppLayout, ProtectedRoute
-│       └── features/                 # auth/, exercises/, routines/, sessions/, dashboard/
-├── docs/                              # Specs, plans, screenshots, DEPLOY.md
-├── docker-compose.yml                 # Postgres + backend + frontend
+│       ├── api/                          # Clientes HTTP por domínio
+│       ├── components/                   # UI compartilhada (Button, Modal, PlateStat...)
+│       ├── context/                      # AuthContext
+│       ├── lib/                          # apiClient, caseConversion, formatDate...
+│       ├── routes/                       # AppLayout, ProtectedRoute
+│       └── features/                     # auth/, exercises/, routines/, sessions/, dashboard/
+├── docs/                                   # Specs, plans, screenshots, DEPLOY.md
+├── docker-compose.yml                      # Postgres + backend + frontend
 └── README.md
 ```
 
@@ -221,18 +222,6 @@ Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
 
 - Frontend: https://liftcurve.vercel.app
 - Backend (API): https://liftcurve.onrender.com
-
-## Status
-
-- [x] Sprint 0 — Fundações
-- [x] Sprint 1 — Schema + Auth
-- [x] Sprint 2 — Exercícios + Rotinas
-- [x] Sprint 3 — Sessões + Domínio Core (1RM, volume, platô)
-- [x] Sprint 4 — API polish + Seed
-- [x] Sprint 5a — Frontend Core (Fundação + Auth + Exercícios + Rotinas)
-- [x] Sprint 5b — Frontend Sessões + Dashboard (Recharts)
-- [x] Sprint 6 — Testes, CI/CD, Deploy
-- [x] Sprint 7 — README final + Polish
 
 ## Aprendizados
 
