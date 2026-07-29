@@ -7,14 +7,11 @@ muscular, detecção automática de platô.
   <img src="docs/screenshots/demo.gif" alt="Demonstração do LiftCurve: login com conta demo, dashboard com progressão de 1RM, volume semanal e alertas de platô, e log de sessão de treino" width="100%" />
 </p>
 
-[![CI](https://github.com/Raphael-Sinelli/liftcurve/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/Raphael-Sinelli/liftcurve/actions/workflows/ci.yml?query=branch%3Adevelop)
-![Java](https://img.shields.io/badge/Java-21-blue)
-![Quarkus](https://img.shields.io/badge/Quarkus-3.37-blue)
-![React](https://img.shields.io/badge/React-19-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-6-blue)
-[![Docker](https://shields.io)](https://shields.io)
-**App em produção:** [liftcurve.vercel.app](https://liftcurve.vercel.app)
-
+![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
+![Quarkus](https://img.shields.io/badge/Quarkus-3.37-4695EB?style=flat-square&logo=quarkus&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 ## O problema
 
 A maioria dos apps de treino param nesse nível: registrar séries, pesos, repetições.
