@@ -12,7 +12,7 @@ muscular, detecção automática de platô.
 ![Quarkus](https://img.shields.io/badge/Quarkus-3.37-blue)
 ![React](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-blue)
-
+[![Docker](https://shields.io)](https://shields.io)
 **App em produção:** [liftcurve.vercel.app](https://liftcurve.vercel.app)
 
 ## O problema
