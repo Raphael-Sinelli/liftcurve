@@ -44,7 +44,7 @@ O que separa o LiftCurve de um CRUD de treino comum:
   revisão de branch inteira antes do merge, e isso pegou bugs reais (não cosméticos) em
   quase toda sprint: uma property de configuração errada que quebrava toda a autenticação,
   uma condição de corrida na exclusão de exercício em uso, estado de loading incorreto em
-  3 telas, 3 problemas reais de CORS. Detalhes na seção [Aprendizados](#aprendizados).
+  3 telas, 3 problemas reais de CORS. Detalhes na seção [Achados reais](#achados-reais).
 
 ## Funcionalidades
 
@@ -159,7 +159,7 @@ gym-progress-tracker/
 └── README.md
 ```
 
-## Como rodar localmente
+## Como executar
 
 Pré-requisitos: Java 21, Node 20+, Docker Desktop.
 
@@ -220,7 +220,7 @@ Passo a passo completo de configuração (variáveis de ambiente, CORS, CSP) em
 - Frontend: https://liftcurve.vercel.app
 - Backend (API): https://liftcurve.onrender.com
 
-## Aprendizados
+## Achados reais
 
 Cada sprint deste projeto passou por revisão de código real antes do merge — task por
 task, e depois uma revisão de branch inteira. Isso pegou bugs reais, não só nitpicks de
@@ -250,6 +250,10 @@ estilo:
 Histórico completo de cada bug, decisão e correção está em
 [`docs/superpowers/plans/`](docs/superpowers/plans/).
 
+## Licença
+
+Este projeto está sob a licença MIT — ver [LICENSE](LICENSE).
+
 ## Autor
 
 Raphael Sinelli
@@ -257,5 +261,5 @@ Raphael Sinelli
 Tecnólogo em Análise e Desenvolvimento de Sistemas — FIAP
 
 - GitHub: https://github.com/Raphael-Sinelli
-- LinkedIn: https://www.linkedin.com/in/raphael-sinelli-675310321/
+- LinkedIn: https://www.linkedin.com/in/raphael-sinelli/
 - E-mail: raphaelsinelli@gmail.com
